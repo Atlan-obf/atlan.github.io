@@ -1,142 +1,62 @@
 <!doctype html>
 <html lang="sk">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Quanta — clear efekt</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quanta efekt</title>
 <style>
-  :root{
-    --bg1: #0f172a;
-    --bg2: #001122;
-    --blur-size: 4px; /* menší blur pozadia */
-  }
-
   html,body{
-    height:100%;
     margin:0;
-    font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-    -webkit-font-smoothing:antialiased;
-    -moz-osx-font-smoothing:grayscale;
-    background: radial-gradient(1200px 600px at 10% 20%, #0f172a 0%, transparent 25%),
-                radial-gradient(900px 500px at 90% 80%, #002032 0%, transparent 25%),
-                linear-gradient(180deg,var(--bg1),var(--bg2));
-    color: #fff;
-    display:grid;
-    place-items:center;
-    overflow:hidden;
-  }
-
-  /* jemný blur overlay (menší) */
-  .blur-bg{
-    position:fixed;
-    inset:0;
-    pointer-events:none;
-    backdrop-filter: blur(var(--blur-size));
-    -webkit-backdrop-filter: blur(var(--blur-size));
-    /* mierne zatemnenie nad blurom pre lepší kontrast textu */
-    background: rgba(2,6,23,0.25);
-  }
-
-  /* kontajner pre text v strede */
-  .stage{
-    position:relative;
-    z-index:2;
+    height:100%;
+    background:black;
     display:flex;
     align-items:center;
     justify-content:center;
-    width:100%;
-    height:100vh;
+    overflow:hidden;
+    font-family:monospace;
   }
 
-  .word{
-    position:relative;
-    font-weight:800;
-    line-height:1;
-    letter-spacing: -0.02em;
-    text-transform:none;
-    /* veľký text "Quanta" */
-    font-size: clamp(64px, 18vw, 200px);
-    display:inline-block;
-    -webkit-text-stroke: 0.5px rgba(255,255,255,0.06);
-    color: transparent;
-    background-image: linear-gradient(90deg,#a8f0ff 0%, #fff 30%, #b3a6ff 60%, #ffd6a5 100%);
-    background-size: 200% 100%;
-    background-clip: text;
-    -webkit-background-clip: text;
-    transform: translateZ(0);
-    /* jemná animácia gradientu */
-    animation: sheen 5s linear infinite;
-  }
-
-  /* "clear" efekt: pseudo-element ktorý začne kryť text a postupne sa stiahne -> odhalí text -> zmizne */
-  .word::before{
+  /* Blur pozadie */
+  body::before{
     content:"";
-    position:absolute;
+    position:fixed;
     inset:0;
-    background: linear-gradient(90deg, rgba(2,6,23,0.95) 0%, rgba(2,6,23,0.95) 50%, rgba(2,6,23,0.95) 100%);
-    /* tento overlay je zodpovedný za "ukázať blur a text" a následne zmiznúť */
-    transform-origin: left center;
-    /* animácia: od 0% kryje celý text, do ~35% sa stiahne (odhalí text), podrží sa, potom sa úplne vytratí */
-    animation: clearReveal 6s ease forwards;
-    z-index:3;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    background:rgba(0,0,0,0.4);
+    z-index:0;
   }
 
-  /* drobná horizontálna "šmýkačka" pri odhalení pre efekt */
-  .word::after{
-    content:"";
-    position:absolute;
-    height:120%;
-    width:6%;
-    right:100%;
-    top:50%;
-    transform:translateY(-50%);
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.9), transparent);
-    filter: blur(6px);
-    opacity:0.6;
-    animation: sweep 6s ease forwards;
-    z-index:4;
+  .typewriter {
+    position:relative;
+    z-index:1;
+    font-size:4rem;
+    font-weight:bold;
+    color:white;
+    white-space:nowrap;
+    overflow:hidden;
+    border-right:.1em solid white; /* kurzor */
+    width:0; /* začne od nuly */
+    animation: typing 2s steps(6,end) forwards, 
+               blink 0.7s step-end infinite, 
+               hide 1s 4s forwards;
   }
 
-  @keyframes clearReveal{
-    0%   { transform: scaleX(1); opacity:1; }
-    20%  { transform: scaleX(0.06); opacity:1; } /* rýchle stiahnutie, text sa odhalí */
-    35%  { transform: scaleX(0); opacity:1; }   /* úplne odhalené */
-    65%  { transform: scaleX(0); opacity:1; }   /* drží odhalené */
-    100% { transform: scaleX(0); opacity:0; }   /* overlay zmizne (clear zmyzne) */
+  @keyframes typing {
+    from { width: 0 }
+    to   { width: 6ch } /* počet znakov v "Quanta" */
   }
 
-  @keyframes sweep{
-    0%   { right:100%; opacity:0; transform: translateY(-50%) scaleX(0.5); }
-    25%  { right:10%;  opacity:0.9; transform: translateY(-50%) scaleX(1.1); }
-    40%  { right:-10%; opacity:0.5; transform: translateY(-50%) scaleX(1); }
-    100% { right:-30%; opacity:0; transform: translateY(-50%) scaleX(1); }
+  @keyframes blink {
+    50% { border-color: transparent }
   }
 
-  @keyframes sheen{
-    0%{ background-position: 0% 50%; }
-    50%{ background-position: 100% 50%; }
-    100%{ background-position: 0% 50%; }
-  }
-
-  /* Aby bol text perfektne centrovaný pri rôznych obrazovkách */
-  .center-wrapper{
-    text-align:center;
-    will-change: transform, opacity;
-  }
-
-  /* responsive tweaks */
-  @media (max-height:420px){
-    .word{ font-size: clamp(40px, 14vw, 120px); }
+  @keyframes hide {
+    to { opacity:0 }
   }
 </style>
 </head>
 <body>
-  <div class="blur-bg" aria-hidden="true"></div>
-
-  <main class="stage" role="main" aria-label="Quanta efekt">
-    <div class="center-wrapper">
-      <span class="word" aria-hidden="false">Quanta</span>
-    </div>
-  </main>
+  <div class="typewriter">Quanta</div>
 </body>
 </html>
