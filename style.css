@@ -1,0 +1,95 @@
+/* Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Body */
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f4f4;
+    color: #333;
+}
+
+/* Horný bar */
+.topbar {
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: auto;
+    background: #333;
+    padding: 10px 30px;
+    border-radius: 8px;
+    z-index: 1000;
+}
+
+.topbar ul {
+    display: flex;
+    list-style: none;
+    gap: 20px;
+}
+
+.topbar li {
+    color: #fff;
+    cursor: pointer;
+    padding: 6px 12px;
+    transition: background 0.2s;
+    border-radius: 6px;
+}
+
+.topbar li:hover,
+.topbar li.active {
+    background: #555;
+}
+
+/* Layout */
+.menu-container {
+    margin-top: 100px; /* odsun kvôli topbaru */
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.menu-content {
+    display: none;
+    width: 80%;
+    max-width: 1000px;
+    min-height: 500px;
+    background: #e0e0e0;
+    border-radius: 10px;
+    display: flex;
+    padding: 20px;
+    gap: 20px;
+}
+
+/* Len aktívna sekcia */
+.menu-content.active {
+    display: flex;
+}
+
+/* Ľavý panel */
+.left {
+    flex: 2;
+    background: #222;
+    color: white;
+    border-radius: 8px;
+    padding: 20px;
+}
+
+/* Pravý panel */
+.right {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.box {
+    flex: 1;
+    background: #444;
+    color: white;
+    border-radius: 8px;
+    padding: 20px;
+}
