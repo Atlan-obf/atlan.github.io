@@ -1,62 +1,53 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="sk">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Quanta efekt</title>
-<style>
-  html,body{
-    margin:0;
-    height:100%;
-    background:black;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    overflow:hidden;
-    font-family:monospace;
-  }
-
-  /* Blur pozadie */
-  body::before{
-    content:"";
-    position:fixed;
-    inset:0;
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
-    background:rgba(0,0,0,0.4);
-    z-index:0;
-  }
-
-  .typewriter {
-    position:relative;
-    z-index:1;
-    font-size:4rem;
-    font-weight:bold;
-    color:white;
-    white-space:nowrap;
-    overflow:hidden;
-    border-right:.1em solid white; /* kurzor */
-    width:0; /* začne od nuly */
-    animation: typing 2s steps(6,end) forwards, 
-               blink 0.7s step-end infinite, 
-               hide 1s 4s forwards;
-  }
-
-  @keyframes typing {
-    from { width: 0 }
-    to   { width: 6ch } /* počet znakov v "Quanta" */
-  }
-
-  @keyframes blink {
-    50% { border-color: transparent }
-  }
-
-  @keyframes hide {
-    to { opacity:0 }
-  }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu Layout</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="typewriter">Quanta</div>
+    <!-- Horný bar -->
+    <header class="topbar">
+        <nav>
+            <ul>
+                <li class="tab active" data-tab="home">Domov</li>
+                <li class="tab" data-tab="settings">Nastavenia</li>
+                <li class="tab" data-tab="about">O aplikácii</li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Hlavný layout -->
+    <main class="menu-container">
+        <!-- Domov -->
+        <section class="menu-content active" id="home">
+            <div class="left">Veľký panel – funkcie / obsah</div>
+            <div class="right">
+                <div class="box">Malý panel 1</div>
+                <div class="box">Malý panel 2</div>
+            </div>
+        </section>
+
+        <!-- Nastavenia -->
+        <section class="menu-content" id="settings">
+            <div class="left">Nastavenia – tu môžu byť funkcie</div>
+            <div class="right">
+                <div class="box">Možnosť A</div>
+                <div class="box">Možnosť B</div>
+            </div>
+        </section>
+
+        <!-- O aplikácii -->
+        <section class="menu-content" id="about">
+            <div class="left">Informácie o aplikácii</div>
+            <div class="right">
+                <div class="box">Credits</div>
+                <div class="box">Verzia 1.0</div>
+            </div>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
 </body>
 </html>
