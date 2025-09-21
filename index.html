@@ -1,53 +1,547 @@
 <!DOCTYPE html>
-<html lang="sk">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Menu Layout</title>
+    <title>Draggable Control Panel</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Horný bar -->
-    <header class="topbar">
-        <nav>
-            <ul>
-                <li class="tab active" data-tab="home">Domov</li>
-                <li class="tab" data-tab="settings">Nastavenia</li>
-                <li class="tab" data-tab="about">O aplikácii</li>
-            </ul>
-        </nav>
-    </header>
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="loading-content">
+            <div class="loading-text">Quant</div>
+            <div class="loading-subtitle">Initializing system...</div>
+        </div>
+    </div>
 
-    <!-- Hlavný layout -->
-    <main class="menu-container">
-        <!-- Domov -->
-        <section class="menu-content active" id="home">
-            <div class="left">Veľký panel – funkcie / obsah</div>
-            <div class="right">
-                <div class="box">Malý panel 1</div>
-                <div class="box">Malý panel 2</div>
+    <!-- Notifications Container -->
+    <div class="notifications-container" id="notifications-container"></div>
+
+    <!-- FPS Counter -->
+    <div class="fps-counter">
+        <div class="fps-section">
+            <span class="fps-label">FPS:</span>
+            <span class="fps-value" id="fps-value">N/A</span>
+        </div>
+        <div class="user-info">
+            <span>User: <span id="username">Player</span></span>
+            <span>Status: <span id="status">Online</span></span>
+        </div>
+    </div>
+
+    <div class="background">
+        <div class="gradient-overlay"></div>
+        
+        <div id="draggable-window" class="window">
+            <!-- Drag Handle -->
+            <div class="drag-handle" id="drag-handle"></div>
+            
+            <!-- Content -->
+            <div class="window-content">
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <div class="sidebar-header">
+                    <div class="search-container">
+                        <input type="text" class="search-input" id="searchInput" placeholder="Search menu...">
+                        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <circle cx="11" cy="11" r="8"/>
+                            <path d="M21 21l-4.35-4.35"/>
+                        </svg>
+                    </div>
+                </div>
+                    
+                    <nav class="sidebar-nav">
+                        <button class="nav-item active" data-category="settings">
+                            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="3"></circle>
+                                <path d="m12 1 1.9 3.4a8.5 8.5 0 0 1 3.8 3.8l3.4 1.9-1.9 3.4a8.5 8.5 0 0 1-3.8 3.8L12 23l-1.9-3.4a8.5 8.5 0 0 1-3.8-3.8L2.9 13.9l1.9-3.4a8.5 8.5 0 0 1 3.8-3.8L12 1Z"></path>
+                            </svg>
+                            <span>Settings</span>
+                        </button>
+                        
+                        <button class="nav-item" data-category="appearance">
+                            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="13.5" cy="6.5" r=".5"></circle>
+                                <circle cx="17.5" cy="10.5" r=".5"></circle>
+                                <circle cx="8.5" cy="7.5" r=".5"></circle>
+                                <circle cx="6.5" cy="12.5" r=".5"></circle>
+                                <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"></path>
+                            </svg>
+                            <span>Appearance</span>
+                        </button>
+                        
+                        <button class="nav-item" data-category="development">
+                            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="16,18 22,12 16,6"></polyline>
+                                <polyline points="8,6 2,12 8,18"></polyline>
+                            </svg>
+                            <span>Development</span>
+                        </button>
+                        
+                        <button class="nav-item" data-category="database">
+                            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
+                                <path d="m3 5v14c0 3 6 3 9 3s9 0 9-3V5"></path>
+                                <path d="m3 12c0 3 6 3 9 3s9 0 9-3"></path>
+                            </svg>
+                            <span>Database</span>
+                        </button>
+                        
+                        <button class="nav-item" data-category="security">
+                            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M9 12l2 2 4-4"></path>
+                                <path d="M21 12c.552 0 1.005-.449.95-.998a10 10 0 0 0-8.953-8.951c-.55-.055-.998.398-.998.95v8a1 1 0 0 0 1 1z"></path>
+                                <path d="M21 12v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v4z"></path>
+                            </svg>
+                            <span>Security</span>
+                        </button>
+                        
+                        <button class="nav-item" data-category="notifications">
+                            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path>
+                                <path d="m13.73 21a2 2 0 0 1-3.46 0"></path>
+                            </svg>
+                            <span>Notifications</span>
+                        </button>
+                    </nav>
+                    
+                </div>
+
+                <!-- Main Content -->
+                <div class="main-content">
+                    <div id="content-settings" class="content-section active">
+                        <!-- Tab Container -->
+                        <div class="main-content-header">
+                            <div class="tab-container">
+                                <button class="tab-button active" data-tab="gameplay">Gameplay</button>
+                                <button class="tab-button" data-tab="graphics">Graphics</button>
+                                <button class="tab-button" data-tab="audio">Audio</button>
+                                <button class="tab-button" data-tab="controls">Controls</button>
+                            </div>
+                        </div>
+
+                        <!-- Tab Contents -->
+                        <div id="tab-gameplay" class="tab-content active">
+                            <div class="category-container">
+                                <div class="category-line"></div>
+                                <div class="category-grid">
+                                    <div class="category-item" data-category="player-settings">
+                                        <span>Player Settings</span>
+                                    </div>
+                                    <div class="category-item" data-category="game-mechanics">
+                                        <span>Game Mechanics</span>
+                                    </div>
+                                    <div class="category-item" data-category="inventory">
+                                        <span>Inventory</span>
+                                    </div>
+                                    <div class="category-item" data-category="combat">
+                                        <span>Combat</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Settings Boxes -->
+                            <div class="settings-container">
+                                <div class="settings-box">
+                                    <h4>Player Movement</h4>
+                                    <div class="settings-item">
+                                        <label class="checkbox-container">
+                                            <input type="checkbox" checked>
+                                            <span class="checkmark"></span>
+                                            Enable sprint
+                                        </label>
+                                    </div>
+                                    <div class="settings-item">
+                                        <label for="speed-slider">Movement Speed</label>
+                                        <div class="slider-container">
+                                            <input type="range" id="speed-slider" min="1" max="10" value="5" class="slider">
+                                            <span class="slider-value">5</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="settings-box">
+                                    <h4>Game Controls</h4>
+                                    <div class="settings-item">
+                                        <button class="button primary">Reset to Default</button>
+                                    </div>
+                                    <div class="settings-item">
+                                        <label class="checkbox-container">
+                                            <input type="checkbox">
+                                            <span class="checkmark"></span>
+                                            Auto-save enabled
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="tab-graphics" class="tab-content">
+                            <div class="category-container">
+                                <div class="category-line"></div>
+                                <div class="category-grid">
+                                    <div class="category-item" data-category="display">
+                                        <span>Display Settings</span>
+                                    </div>
+                                    <div class="category-item" data-category="quality">
+                                        <span>Quality Settings</span>
+                                    </div>
+                                    <div class="category-item" data-category="performance">
+                                        <span>Performance</span>
+                                    </div>
+                                    <div class="category-item" data-category="ui">
+                                        <span>UI Settings</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="settings-container">
+                                <div class="settings-box">
+                                    <h4>Display Options</h4>
+                                    <div class="settings-item">
+                                        <label for="resolution-select">Resolution</label>
+                                        <select id="resolution-select" class="select-input">
+                                            <option value="1920x1080">1920x1080</option>
+                                            <option value="2560x1440">2560x1440</option>
+                                            <option value="3840x2160">3840x2160</option>
+                                        </select>
+                                    </div>
+                                    <div class="settings-item">
+                                        <label class="checkbox-container">
+                                            <input type="checkbox" checked>
+                                            <span class="checkmark"></span>
+                                            Fullscreen mode
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="tab-audio" class="tab-content">
+                            <div class="category-container">
+                                <div class="category-line"></div>
+                                <div class="category-grid">
+                                    <div class="category-item" data-category="master-volume">
+                                        <span>Master Volume</span>
+                                    </div>
+                                    <div class="category-item" data-category="sound-effects">
+                                        <span>Sound Effects</span>
+                                    </div>
+                                    <div class="category-item" data-category="music">
+                                        <span>Music</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="settings-container">
+                                <div class="settings-box">
+                                    <h4>Audio Levels</h4>
+                                    <div class="settings-item">
+                                        <label for="master-volume">Master Volume</label>
+                                        <div class="slider-container">
+                                            <input type="range" id="master-volume" min="0" max="100" value="75" class="slider">
+                                            <span class="slider-value">75</span>
+                                        </div>
+                                    </div>
+                                    <div class="settings-item">
+                                        <label class="checkbox-container">
+                                            <input type="checkbox" checked>
+                                            <span class="checkmark"></span>
+                                            Mute when minimized
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="tab-controls" class="tab-content">
+                            <div class="category-container">
+                                <div class="category-line"></div>
+                                <div class="category-grid">
+                                    <div class="category-item" data-category="keyboard">
+                                        <span>Keyboard</span>
+                                    </div>
+                                    <div class="category-item" data-category="mouse">
+                                        <span>Mouse</span>
+                                    </div>
+                                    <div class="category-item" data-category="controller">
+                                        <span>Controller</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="settings-container">
+                                <div class="settings-box">
+                                    <h4>Input Settings</h4>
+                                    <div class="settings-item">
+                                        <label for="mouse-sensitivity">Mouse Sensitivity</label>
+                                        <div class="slider-container">
+                                            <input type="range" id="mouse-sensitivity" min="1" max="20" value="10" class="slider">
+                                            <span class="slider-value">10</span>
+                                        </div>
+                                    </div>
+                                    <div class="settings-item">
+                                        <button class="button primary">Configure Keybinds</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="content-appearance" class="content-section">
+                        <div class="main-content-header">
+                            <div class="tab-container">
+                                <button class="tab-button active" data-tab="themes">Themes</button>
+                                <button class="tab-button" data-tab="colors">Colors</button>
+                                <button class="tab-button" data-tab="fonts">Fonts</button>
+                            </div>
+                        </div>
+
+                        <div id="tab-themes" class="tab-content active">
+                            <div class="category-grid">
+                                <div class="category-item">
+                                    <h3>Dark Theme</h3>
+                                    <p>Dark color scheme for low-light environments</p>
+                                </div>
+                                <div class="category-item">
+                                    <h3>Light Theme</h3>
+                                    <p>Bright theme for well-lit environments</p>
+                                </div>
+                                <div class="category-item">
+                                    <h3>Custom Themes</h3>
+                                    <p>Create and manage custom color themes</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="tab-colors" class="tab-content">
+                            <div class="category-grid">
+                                <div class="category-item">
+                                    <h3>Accent Colors</h3>
+                                    <p>Primary and secondary accent colors</p>
+                                </div>
+                                <div class="category-item">
+                                    <h3>Background</h3>
+                                    <p>Background colors and gradients</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="tab-fonts" class="tab-content">
+                            <div class="category-grid">
+                                <div class="category-item">
+                                    <h3>Font Family</h3>
+                                    <p>Choose system or custom fonts</p>
+                                </div>
+                                <div class="category-item">
+                                    <h3>Font Size</h3>
+                                    <p>Adjust text size for better readability</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="content-development" class="content-section">
+                        <div class="main-content-header">
+                            <div class="tab-container">
+                                <button class="tab-button active" data-tab="debugging">Debugging</button>
+                                <button class="tab-button" data-tab="console">Console</button>
+                                <button class="tab-button" data-tab="profiling">Profiling</button>
+                            </div>
+                        </div>
+
+                        <div id="tab-debugging" class="tab-content active">
+                            <div class="category-grid">
+                                <div class="category-item">
+                                    <h3>Debug Mode</h3>
+                                    <p>Enable debug information and logging</p>
+                                </div>
+                                <div class="category-item">
+                                    <h3>Error Reporting</h3>
+                                    <p>Configure error reporting and crash logs</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="tab-console" class="tab-content">
+                            <div class="category-grid">
+                                <div class="category-item">
+                                    <h3>Console Commands</h3>
+                                    <p>Available console commands and shortcuts</p>
+                                </div>
+                                <div class="category-item">
+                                    <h3>Command History</h3>
+                                    <p>View and manage command history</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="tab-profiling" class="tab-content">
+                            <div class="category-grid">
+                                <div class="category-item">
+                                    <h3>Performance Monitor</h3>
+                                    <p>Real-time performance monitoring</p>
+                                </div>
+                                <div class="category-item">
+                                    <h3>Memory Usage</h3>
+                                    <p>Track memory allocation and usage</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="content-database" class="content-section">
+                        <div class="main-content-header">
+                            <div class="tab-container">
+                                <button class="tab-button active" data-tab="connection">Connection</button>
+                                <button class="tab-button" data-tab="backup">Backup</button>
+                                <button class="tab-button" data-tab="optimization">Optimization</button>
+                            </div>
+                        </div>
+
+                        <div id="tab-connection" class="tab-content active">
+                            <div class="category-grid">
+                                <div class="category-item">
+                                    <h3>Connection Settings</h3>
+                                    <p>Database connection configuration</p>
+                                </div>
+                                <div class="category-item">
+                                    <h3>Authentication</h3>
+                                    <p>Database authentication and security</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="tab-backup" class="tab-content">
+                            <div class="category-grid">
+                                <div class="category-item">
+                                    <h3>Auto Backup</h3>
+                                    <p>Automatic backup scheduling</p>
+                                </div>
+                                <div class="category-item">
+                                    <h3>Manual Backup</h3>
+                                    <p>Create manual database backups</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="tab-optimization" class="tab-content">
+                            <div class="category-grid">
+                                <div class="category-item">
+                                    <h3>Query Optimization</h3>
+                                    <p>Optimize database queries for performance</p>
+                                </div>
+                                <div class="category-item">
+                                    <h3>Index Management</h3>
+                                    <p>Manage database indexes</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="content-security" class="content-section">
+                        <div class="main-content-header">
+                            <div class="tab-container">
+                                <button class="tab-button active" data-tab="authentication">Authentication</button>
+                                <button class="tab-button" data-tab="encryption">Encryption</button>
+                                <button class="tab-button" data-tab="privacy">Privacy</button>
+                            </div>
+                        </div>
+
+                        <div id="tab-authentication" class="tab-content active">
+                            <div class="category-grid">
+                                <div class="category-item">
+                                    <h3>Two-Factor Auth</h3>
+                                    <p>Enable two-factor authentication</p>
+                                </div>
+                                <div class="category-item">
+                                    <h3>Password Policy</h3>
+                                    <p>Configure password requirements</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="tab-encryption" class="tab-content">
+                            <div class="category-grid">
+                                <div class="category-item">
+                                    <h3>Data Encryption</h3>
+                                    <p>Encrypt sensitive data</p>
+                                </div>
+                                <div class="category-item">
+                                    <h3>SSL/TLS</h3>
+                                    <p>Secure connection settings</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="tab-privacy" class="tab-content">
+                            <div class="category-grid">
+                                <div class="category-item">
+                                    <h3>Data Collection</h3>
+                                    <p>Control what data is collected</p>
+                                </div>
+                                <div class="category-item">
+                                    <h3>Analytics</h3>
+                                    <p>Analytics and tracking preferences</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="content-notifications" class="content-section">
+                        <div class="main-content-header">
+                            <div class="tab-container">
+                                <button class="tab-button active" data-tab="email">Email</button>
+                                <button class="tab-button" data-tab="push">Push</button>
+                                <button class="tab-button" data-tab="ingame">In-Game</button>
+                            </div>
+                        </div>
+
+                        <div id="tab-email" class="tab-content active">
+                            <div class="category-grid">
+                                <div class="category-item">
+                                    <h3>Email Notifications</h3>
+                                    <p>Configure email notification settings</p>
+                                </div>
+                                <div class="category-item">
+                                    <h3>Newsletter</h3>
+                                    <p>Subscribe to newsletters and updates</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="tab-push" class="tab-content">
+                            <div class="category-grid">
+                                <div class="category-item">
+                                    <h3>Push Notifications</h3>
+                                    <p>Mobile and desktop push notifications</p>
+                                </div>
+                                <div class="category-item">
+                                    <h3>Notification Timing</h3>
+                                    <p>Configure when to receive notifications</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="tab-ingame" class="tab-content">
+                            <div class="category-grid">
+                                <div class="category-item">
+                                    <h3>Game Alerts</h3>
+                                    <p>In-game notification and alert settings</p>
+                                </div>
+                                <div class="category-item">
+                                    <h3>Chat Notifications</h3>
+                                    <p>Chat and message notification settings</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </section>
+        </div>
+    </div>
 
-        <!-- Nastavenia -->
-        <section class="menu-content" id="settings">
-            <div class="left">Nastavenia – tu môžu byť funkcie</div>
-            <div class="right">
-                <div class="box">Možnosť A</div>
-                <div class="box">Možnosť B</div>
-            </div>
-        </section>
-
-        <!-- O aplikácii -->
-        <section class="menu-content" id="about">
-            <div class="left">Informácie o aplikácii</div>
-            <div class="right">
-                <div class="box">Credits</div>
-                <div class="box">Verzia 1.0</div>
-            </div>
-        </section>
-    </main>
-
-    <script src="script.js"></script>
+    <script src="scripts.js"></script>
 </body>
 </html>
