@@ -1,7 +1,11 @@
 body {
     margin: 0;
     font-family: 'SUSE', sans-serif;
-    font-weight: 700;  
+    font-weight: 700;
+    background: transparent;
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
 }
 
 #player-info {
@@ -9,21 +13,23 @@ body {
     top: 10px;
     right: 20px;
     background: #101010;
-    padding: 12px 20px;
-    min-width: 200px;
+    padding: 9px 13px;
+    min-width: 180px;
     color: white;
-    font-size: 15px;
+    font-size: 14px;
     text-align: center;
     border: 1px solid #333;
-    border-radius: 2px;
     border-top-left-radius: 4px;
     border-top-right-radius: 4px;
+    border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px;
+    z-index: 1000;
 }
 
 .pink-line {
     height: 4px;
     background-color: #e69875;
-    margin: -12px -20px 10px -20px;
+    margin: -10px -14px 10px -14px;
     border-top-left-radius: 4px;
     border-top-right-radius: 4px;
 }
@@ -38,4 +44,129 @@ body {
 .separator {
     color: #666;
     font-weight: normal;
+}
+
+/* Debug Menu Styles */
+#debug-menu {
+    position: absolute;
+    top: 50px;
+    left: 50px;
+    width: 300px;
+    height: 400px;
+    background: rgba(16, 16, 16, 0.95);
+    border: 1px solid #333;
+    border-radius: 4px;
+    color: white;
+    z-index: 999;
+    display: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+#debug-header {
+    height: 30px;
+    background: #1a1a1a;
+    border-bottom: 1px solid #333;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 10px;
+    cursor: move;
+    user-select: none;
+}
+
+#debug-title {
+    font-weight: bold;
+    color: #e69875;
+}
+
+#debug-controls {
+    display: flex;
+    gap: 5px;
+}
+
+.debug-btn {
+    background: none;
+    border: none;
+    color: #ccc;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 2px 5px;
+}
+
+.debug-btn:hover {
+    color: #e69875;
+}
+
+#debug-content {
+    padding: 10px;
+    height: calc(100% - 50px);
+    overflow-y: auto;
+}
+
+.debug-section {
+    margin-bottom: 15px;
+    border-bottom: 1px solid #333;
+    padding-bottom: 10px;
+}
+
+.debug-section h3 {
+    margin: 0 0 8px 0;
+    font-size: 14px;
+    color: #e69875;
+}
+
+.debug-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+    font-size: 12px;
+}
+
+.debug-value {
+    color: #aaa;
+}
+
+#debug-footer {
+    height: 20px;
+    background: #1a1a1a;
+    border-top: 1px solid #333;
+    display: flex;
+    justify-content: flex-end;
+    padding: 0 10px;
+    align-items: center;
+}
+
+#export-btn {
+    background: #e69875;
+    border: none;
+    color: #101010;
+    padding: 2px 8px;
+    border-radius: 2px;
+    cursor: pointer;
+    font-size: 10px;
+    font-weight: bold;
+}
+
+#export-btn:hover {
+    background: #d88a67;
+}
+
+.anticheat-status {
+    padding: 5px;
+    border-radius: 3px;
+    text-align: center;
+    margin-top: 5px;
+    font-size: 12px;
+}
+
+.anticheat-detected {
+    background: rgba(230, 152, 117, 0.2);
+    border: 1px solid #e69875;
+    color: #e69875;
+}
+
+.no-antichast {
+    background: rgba(100, 200, 100, 0.2);
+    border: 1px solid #64c864;
+    color: #64c864;
 }
