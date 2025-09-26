@@ -1,4 +1,3 @@
-// Debug Menu Drag Functionality
 let isDragging = false;
 let dragOffset = { x: 0, y: 0 };
 const debugMenu = document.getElementById('debug-menu');
