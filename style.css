@@ -9,11 +9,12 @@ body {
     right: 20px;
     background: #101010;
     padding: 12px 20px;
-    min-width: 280px;
+    min-width: 200px;
     color: white;
-    font-size: 22px;
+    font-size: 18px;
     text-align: center;
-    border: 2px solid #333;
+    border: 1px solid #333;
+    border-radius: 2px;
 }
 
 .pink-line {
