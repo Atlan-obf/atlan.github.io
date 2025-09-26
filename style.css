@@ -1,33 +1,35 @@
 body {
-  margin: 0;
-  font-family: Arial, sans-serif;
+    margin: 0;
+    font-family: 'Jersey 25', sans-serif;
 }
 
 #player-info {
-  position: absolute;
-  top: 20px;
-  left: 20px;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: #101010;
+    padding: 12px 20px;
+    min-width: 280px;
+    color: white;
+    font-size: 22px;
+    text-align: center;
+    border: 2px solid #333;
 }
 
-table {
-  border-collapse: collapse;
-  background: #111;
-  color: white;
-  font-size: 14px;
-  min-width: 250px;
+.pink-line {
+    height: 4px;
+    background-color: #CF76AE;
+    margin: -12px -20px 10px -20px;
 }
 
-th, td {
-  padding: 8px 12px;
-  text-align: center;
-  border: 1px solid #333;
+.info-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
 }
 
-th {
-  background: #000;
-  color: #fff;
-}
-
-thead tr {
-  border-bottom: 2px solid #cf76ae;
+.separator {
+    color: #666;
+    font-weight: normal;
 }
