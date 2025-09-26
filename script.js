@@ -23,7 +23,6 @@ document.addEventListener('mouseup', () => {
     debugMenu.style.cursor = 'grab';
 });
 
-// Debug Menu Controls
 document.getElementById('close-btn').addEventListener('click', () => {
     debugMenu.style.display = 'none';
 });
