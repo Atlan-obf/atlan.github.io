@@ -3,13 +3,13 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Debug Menu</title>
+    <title>Status Box + Debug Menu</title>
     <link href="https://fonts.googleapis.com/css2?family=SUSE&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-    <!-- Player Info Box -->
+    <!-- Player info -->
     <div id="player-info">
         <div class="pink-line"></div>
         <div class="info-content">
@@ -21,61 +21,10 @@
         </div>
     </div>
 
-    <!-- Debug Menu -->
+    <!-- Debug menu -->
     <div id="debug-menu">
-        <div id="debug-header">
-            <span id="debug-title">Debug Menu</span>
-            <div id="debug-controls">
-                <button class="debug-btn" id="minimize-btn">−</button>
-                <button class="debug-btn" id="close-btn">×</button>
-            </div>
-        </div>
-        <div id="debug-content">
-            <div class="debug-section">
-                <h3>Player Information</h3>
-                <div class="debug-item">
-                    <span>Name:</span>
-                    <span id="debug-player-name" class="debug-value">Loading...</span>
-                </div>
-                <div class="debug-item">
-                    <span>ID:</span>
-                    <span id="debug-player-id" class="debug-value">Loading...</span>
-                </div>
-                <div class="debug-item">
-                    <span>Keybind:</span>
-                    <span id="debug-keybind" class="debug-value">Loading...</span>
-                </div>
-            </div>
-
-            <div class="debug-section">
-                <h3>Server Information</h3>
-                <div class="debug-item">
-                    <span>IP:</span>
-                    <span id="debug-server-ip" class="debug-value">Loading...</span>
-                </div>
-                <div class="debug-item">
-                    <span>Build:</span>
-                    <span id="debug-server-build" class="debug-value">Loading...</span>
-                </div>
-            </div>
-
-            <div class="debug-section">
-                <h3>Anticheat Status</h3>
-                <div id="anticheat-status" class="anticheat-status no-antichast">
-                    No antichast detected!
-                </div>
-            </div>
-
-            <div class="debug-section">
-                <h3>Resource Monitor</h3>
-                <div id="resource-list">
-                    <!-- Resources will be populated here -->
-                </div>
-            </div>
-        </div>
-        <div id="debug-footer">
-            <button id="export-btn">Export to Lua</button>
-        </div>
+        <div id="debug-header"></div>
+        <div id="debug-content"></div>
     </div>
 
     <script src="script.js"></script>
