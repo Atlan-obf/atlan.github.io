@@ -1,4 +1,3 @@
-// Dragovanie debug menu
 (function() {
     const menu = document.getElementById("debug-menu");
     const header = document.getElementById("debug-header");
