@@ -3,12 +3,13 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Status Box + Debug Menu</title>
+    <title>Status + Debug Menu</title>
     <link href="https://fonts.googleapis.com/css2?family=SUSE&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
+    <!-- Player info -->
     <div id="player-info">
         <div class="pink-line"></div>
         <div class="info-content">
@@ -20,9 +21,13 @@
         </div>
     </div>
 
-    <div id="debug-menu">
+    <!-- Debug menu -->
+    <div id="debug-menu" style="display: none;">
         <div id="debug-header"></div>
-        <div id="debug-content"></div>
+        <div id="debug-content">
+            <div id="log-main"></div>
+            <div id="log-sub"></div>
+        </div>
     </div>
 
     <script src="script.js"></script>
