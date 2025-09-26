@@ -2,11 +2,8 @@ body {
     margin: 0;
     font-family: 'SUSE', sans-serif;
     font-weight: 700;
-    background: transparent;
-    color: white;
 }
 
-/* ==== Player Info ==== */
 #player-info {
     position: absolute;
     top: 10px;
@@ -18,7 +15,10 @@ body {
     font-size: 14px;
     text-align: center;
     border: 1px solid #333;
-    border-radius: 4px;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px;
 }
 
 .pink-line {
@@ -39,51 +39,4 @@ body {
 .separator {
     color: #666;
     font-weight: normal;
-}
-
-/* ==== Debug Menu ==== */
-#debug-menu {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 420px;
-    background: #111;
-    border: 1px solid #000;
-    border-radius: 2px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-    font-family: monospace;
-}
-
-#debug-header {
-    height: 6px;
-    background: #e67e22;
-    /* oranžová linka */
-    cursor: move;
-    border-top-left-radius: 2px;
-    border-top-right-radius: 2px;
-}
-
-#debug-content {
-    padding: 10px;
-    font-size: 14px;
-    line-height: 1.5em;
-    color: #0f0;
-}
-
-#log-main>div::before,
-#log-sub>div::before {
-    content: "> ";
-    color: #fff;
-}
-
-#log-sub {
-    margin-top: 10px;
-    padding: 8px;
-    background: #222;
-    border-radius: 2px;
-    font-size: 13px;
-    color: #ccc;
-    max-height: 150px;
-    overflow-y: auto;
 }
