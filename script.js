@@ -19,7 +19,6 @@
     });
 })();
 
-// Update player-info z Lua
 window.addEventListener("message", function(event) {
     const data = event.data;
 
