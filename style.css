@@ -7,7 +7,7 @@ body {
 #player-info {
     position: absolute;
     top: 15px;
-    right: 1070px;
+    right: 950px;
     background: #101010d3;
     padding: 7px 9px;
     min-width: 180px;
@@ -33,7 +33,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
     transform: translateY(-1px);
     letter-spacing: 1.7px;
 }
