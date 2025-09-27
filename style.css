@@ -7,7 +7,7 @@ body {
 #player-info {
     position: absolute;
     top: 15px;
-    right: 900px;
+    right: 890px;
     background: #101010a6;
     padding: 7px 9px;
     min-width: 180px;
@@ -18,11 +18,11 @@ body {
     border-top-right-radius: 12px;
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
-    border: 2px solid #d1759b;
-    box-shadow: 0 0 3px #d1759b;
+    border: 0.6px solid #d1759b;
+    box-shadow: 0 0 2px #d1759b;
 
     opacity: 0;
-    animation: fadeIn 1.0s ease forwards;
+    animation: fadeIn 1.5s ease forwards;
 }
 
 @keyframes fadeIn {
