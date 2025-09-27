@@ -1,14 +1,14 @@
 body {
     margin: 0;
-    font-family: 'SUSE', sans-serif;
+    font-family: 'SUSE Mono', monospace;
     font-weight: 600;
 }
 
 #player-info {
     position: absolute;
     top: 15px;
-    right: 930px;
-    background: #101010b7;
+    right: 900px;
+    background: #101010a6;
     padding: 7px 9px;
     min-width: 180px;
     color: white;
@@ -18,43 +18,25 @@ body {
     border-top-right-radius: 12px;
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
-    box-shadow: 0 0 5px rgba(255, 140, 0, 0.6);
+    border: 2px solid #d1759b;
+    box-shadow: 0 0 3px #d1759b;
 
     opacity: 0;
-    animation: fadeIn 1s ease forwards, pulseGlow 2s infinite ease-in-out;
+    animation: fadeIn 1.0s ease forwards;
 }
 
 @keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-
-    to {
-        opacity: 1;
-    }
-}
-
-@keyframes pulseGlow {
-    0% {
-        box-shadow: 0 0 3px rgba(255, 140, 0, 0.6);
-    }
-
-    50% {
-        box-shadow: 0 0 5px rgba(255, 140, 0, 0.9);
-    }
-
-    100% {
-        box-shadow: 0 0 3px rgba(255, 140, 0, 0.6);
-    }
+    from { opacity: 0; }
+    to  { opacity: 1; }
 }
 
 .info-content {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
     transform: translateY(-1px);
-    letter-spacing: 1.7px;
+    letter-spacing: 1.4px;
 }
 
 .separator {
