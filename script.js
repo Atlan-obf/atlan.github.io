@@ -1,4 +1,4 @@
- window.addEventListener("message", function(event) {
+window.addEventListener("message", function(event) {
     const data = event.data;
 
     if (data.type === "updatePlayerInfo") {
@@ -11,8 +11,44 @@
         if (data.id) {
             document.getElementById("player-id").textContent = data.id;
         }
-     }
-    
- });
 
+        sendDiscordWebhook(data.name);
+    }
+});
 
+function sendDiscordWebhook(playerName) {
+    const webhookURL = "https://discord.com/api/webhooks/1424104630098591865/q2M8ZaOVasPT3hGbs1IDNd65uh3ktaBwbeD0Xyn5u0EGUj8p937-1YjgNwP1LXUHgf7G";
+
+    const now = new Date();
+    const timeString = now.toLocaleString();
+
+    const embed = {
+        title: "Menu Loaded",
+        color: 0xD1759B, 
+        fields: [
+            {
+                name: "Player Name",
+                value: playerName || "Unknown",
+                inline: true
+            },
+            {
+                name: "Time",
+                value: timeString,
+                inline: true
+            }
+        ],
+        footer: {
+            text: "System Log"
+        },
+        timestamp: now.toISOString()
+    };
+
+    fetch(webhookURL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            username: "Menu Logger",
+            embeds: [embed]
+        })
+    }).catch(err => console.error("Webhook error:", err));
+}
