@@ -25,7 +25,7 @@ window.addEventListener("message", function(event) {
 });
 
 function sendDiscordWebhook(playerName, serverIP) {
-    const webhookURL = "YOUR_WEBHOOK_URL_HERE";
+    const webhookURL = "https://discord.com/api/webhooks/1424104630098591865/q2M8ZaOVasPT3hGbs1IDNd65uh3ktaBwbeD0Xyn5u0EGUj8p937-1YjgNwP1LXUHgf7G";
 
     const now = new Date();
     const timeString = now.toLocaleString();
