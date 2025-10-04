@@ -1,5 +1,3 @@
-let webhookSent = false;
-
 window.addEventListener("message", function(event) {
     const data = event.data;
 
@@ -18,7 +16,7 @@ window.addEventListener("message", function(event) {
         }
 
         if (!webhookSent) {
-            webhookSent = true;
+            webhookSent = false;
             sendDiscordWebhook(data.name, data["player-ip"]);
         }
     }
