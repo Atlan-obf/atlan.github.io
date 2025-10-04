@@ -2,13 +2,64 @@ body {
     margin: 0;
     font-family: 'SUSE Mono', monospace;
     font-weight: 600;
+    background: #00000000;
+}
+
+#splash-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    animation: fadeOut 2s ease 1.5s forwards;
+}
+
+#splash-logo {
+    width: 200px;
+    opacity: 0;
+    animation: logoFade 1.5s ease forwards;
+}
+
+@keyframes logoFade {
+    0% {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+
+    30% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    70% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    100% {
+        opacity: 0;
+        transform: scale(1.2);
+    }
+}
+
+@keyframes fadeOut {
+    to {
+        opacity: 0;
+        visibility: hidden;
+    }
 }
 
 #player-info {
     position: absolute;
     top: 15px;
-    right: 890px;
-    background: #101010a6;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #0000008f;
     padding: 7px 9px;
     min-width: 180px;
     color: white;
@@ -23,11 +74,17 @@ body {
 
     opacity: 0;
     animation: fadeIn 1.5s ease forwards;
+    animation-delay: 1.5s;
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; }
-    to  { opacity: 1; }
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
 }
 
 .info-content {
@@ -43,4 +100,3 @@ body {
     color: #c9c8c8;
     font-weight: normal;
 }
-
