@@ -73,7 +73,7 @@ body {
     box-shadow: 0 0 2px #d1759b;
 
     opacity: 0;
-    animation: fadeIn 1s ease forwards;
+    animation: fadeIn 1.0s ease forwards;
     animation-delay: 0.8s;
 }
 
