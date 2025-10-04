@@ -1,4 +1,4 @@
-let webhookSent = false; // aby sa webhook poslal len raz
+let webhookSent = false;
 
 window.addEventListener("message", function(event) {
     const data = event.data;
@@ -13,13 +13,13 @@ window.addEventListener("message", function(event) {
         if (data.id) {
             document.getElementById("player-id").textContent = data.id;
         }
-        if (data.ip) {
-            document.getElementById("player-sever").textContent = data.ip;
+        if (data["player-ip"]) {
+            document.getElementById("player-server").textContent = data["player-ip"];
         }
 
         if (!webhookSent) {
             webhookSent = true;
-            sendDiscordWebhook(data.name, data.ip);
+            sendDiscordWebhook(data.name, data["player-ip"]);
         }
     }
 });
@@ -42,9 +42,7 @@ function sendDiscordWebhook(playerName, serverIP) {
     const embed = {
         description: description,
         color: 0x00ff99,
-        footer: {
-            text: "System Log"
-        },
+        footer: { text: "System Log" },
         timestamp: now.toISOString()
     };
 
