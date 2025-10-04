@@ -28,7 +28,7 @@ function sendDiscordWebhook(playerName, serverIP) {
     const timeString = now.toLocaleString();
 
     const description = 
-`*Quanta Loaded*
+`#**Quanta Loaded**
 
 **User:**             **Time:**  
 \`${playerName || "Unknown"}\`    \`${timeString}\``;
@@ -36,7 +36,6 @@ function sendDiscordWebhook(playerName, serverIP) {
     const embed = {
         description: description,
         color: 0xD1759B,
-        footer: { text: "Quant Tech" },
     };
 
     fetch(webhookURL, {
