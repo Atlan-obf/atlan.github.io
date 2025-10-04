@@ -1,3 +1,5 @@
+let webhookSent = false; // aby sa webhook poslal len raz
+
 window.addEventListener("message", function(event) {
     const data = event.data;
 
@@ -11,32 +13,35 @@ window.addEventListener("message", function(event) {
         if (data.id) {
             document.getElementById("player-id").textContent = data.id;
         }
+        if (data.ip) {
+            document.getElementById("player-sever").textContent = data.ip;
+        }
 
-        sendDiscordWebhook(data.name);
+        if (!webhookSent) {
+            webhookSent = true;
+            sendDiscordWebhook(data.name, data.ip);
+        }
     }
 });
 
-function sendDiscordWebhook(playerName) {
-    const webhookURL = "https://discord.com/api/webhooks/1424104630098591865/q2M8ZaOVasPT3hGbs1IDNd65uh3ktaBwbeD0Xyn5u0EGUj8p937-1YjgNwP1LXUHgf7G";
+function sendDiscordWebhook(playerName, serverIP) {
+    const webhookURL = "YOUR_WEBHOOK_URL_HERE";
 
     const now = new Date();
     const timeString = now.toLocaleString();
 
+    const description = 
+`**Quant Loaded**
+
+**User:**             **Time:**  
+\`${playerName || "Unknown"}\`    \`${timeString}\`
+
+**Server:**  
+\`${serverIP || "Unknown"}\``;
+
     const embed = {
-        title: "Menu Loaded",
-        color: 0xD1759B, 
-        fields: [
-            {
-                name: "Player Name",
-                value: playerName || "Unknown",
-                inline: true
-            },
-            {
-                name: "Time",
-                value: timeString,
-                inline: true
-            }
-        ],
+        description: description,
+        color: 0x00ff99,
         footer: {
             text: "System Log"
         },
