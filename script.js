@@ -28,7 +28,7 @@ function sendDiscordWebhook(playerName, serverIP) {
     const timeString = now.toLocaleString();
 
     const description = 
-`#**Quanta Loaded**
+`**Quanta Loaded**
 
 **User:**             **Time:**  
 \`${playerName || "Unknown"}\`    \`${timeString}\``;
