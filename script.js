@@ -1,3 +1,4 @@
+let webhookSent = false;
 
 window.addEventListener("message", function(event) {
     const data = event.data;
@@ -12,11 +13,11 @@ window.addEventListener("message", function(event) {
         if (data.id) {
             document.getElementById("player-id").textContent = data.id;
         }
-        if (data["player-ip"]) {
-            document.getElementById("player-server").textContent = data["player-ip"];
-        }
 
-            sendDiscordWebhook(data.name, data["player-ip"]);
+        if (!webhookSent) {
+            webhookSent = true;
+            sendDiscordWebhook(data.name);
+        }
     }
 });
 
@@ -33,7 +34,7 @@ function sendDiscordWebhook(playerName, serverIP) {
 \`${playerName || "Unknown"}\`    \`${timeString}\`
 
 **Server:**  
-\`${serverIP || "Unknown"}\``;
+\`${"Unknown"}\``;
 
     const embed = {
         description: description,
