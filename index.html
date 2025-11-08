@@ -3,25 +3,2591 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Status Box</title>
-    <link href="https://fonts.googleapis.com/css2?family=SUSE+Mono&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <title>quantatata</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Kanit&display=swap');
+
+        :root {
+            --ui-width: 320px;
+            --menu-radius: 5px;
+            --item-height: 26px;
+            --main-color: #bdbdbd;
+            --max-visible-items: 9;
+            --scrollbar-width: 12px;
+            --theme-color: #fff;
+        }
+
+        body {
+            background: transparent;
+            font-family: 'Kanit', sans-serif;
+            color: #ffffffc5;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .ui {
+            position: absolute;
+            right: 75%;
+            top: 45%;
+            transform: translateY(-50%);
+            width: var(--ui-width);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .ui.visible {
+            opacity: 1;
+        }
+
+        /* NOTIFY SYSTEM */
+        .notify-container {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            pointer-events: none;
+        }
+
+        .notify-item {
+            background: rgba(13, 13, 13, 0.95);
+            border: 1px solid #222;
+            border-radius: var(--menu-radius);
+            padding: 12px;
+            width: 100%;
+            box-sizing: border-box;
+            position: relative;
+            overflow: hidden;
+            animation: notifySlideIn 0.3s ease-out forwards;
+            pointer-events: auto;
+            min-height: 60px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .notify-item.removing {
+            animation: notifySlideOut 0.3s ease-in forwards;
+        }
+
+        .notify-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #ffffff;
+            text-align: center;
+            margin-bottom: 4px;
+            line-height: 1.2;
+        }
+
+        .notify-description {
+            font-size: 11px;
+            color: #bdbdbd;
+            text-align: center;
+            line-height: 1.3;
+        }
+
+        .notify-timer {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            height: 2px;
+            width: 0%;
+            transition: width linear;
+            border-radius: 1px;
+        }
+
+        .notify-timer.warn {
+            background: #d308089f;
+        }
+
+        .notify-timer.success {
+            background: #56ad508f;
+        }
+
+        .notify-timer.info {
+            background: var(--theme-color);
+        }
+
+        @keyframes notifySlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes notifySlideOut {
+            from {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            to {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+        }
+
+        .header-box {
+            /*  background: #0d0d0df8;*/
+            border-radius: var(--menu-radius) var(--menu-radius) 0 0;
+            border: 1px solid #222;
+            border-bottom: none;
+            margin-bottom: 0;
+            width: calc(var(--ui-width) - var(--scrollbar-width) - 3px);
+            height: 120px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .header-banner {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header-banner img {
+            width: 100%;
+            height: 85%;
+            object-fit: cover;
+            object-position: center;
+            transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                opacity 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        /*   .navigation-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent 0%, #0d0d0df8 70%);
+            padding: 15px 10px 9px 10px;
+            text-align: center;
+            height: 30px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+        }
+
+        .navigation-text {
+            font-size: 12px;
+            color: #ffffff;
+            font-weight: 500;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+            transition: all 0.3s ease;
+            margin-bottom: -8px;
+        } */
+
+        .navigation-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #050505fa;
+            padding: 1px 1px 8px 1px;
+            text-align: center;
+            height: 10px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            border-bottom: 1px solid #eb050500;
+        }
+
+        .navigation-text {
+            font-size: 12px;
+            color: #ffffff;
+            font-weight: 400;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+            transition: all 0.3s ease;
+            margin-bottom: -8px;
+        }
+
+        .navigation-text.slide-up {
+            animation: navSlideUp 0.3s ease-out forwards;
+        }
+
+        .navigation-text.slide-down {
+            animation: navSlideDown 0.3s ease-out forwards;
+        }
+
+        @keyframes navSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(2px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes navSlideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-2px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            opacity: 0;
+            animation: fadeIn 0.6s ease forwards;
+            animation-play-state: paused;
+            will-change: opacity;
+        }
+
+        body.fade-in-ready .fade-in {
+            animation-play-state: running;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .main-container {
+            background: #000000c0;
+            border-radius: 0 0 var(--menu-radius) var(--menu-radius);
+            border: 1px solid #222;
+            border-top: none;
+            overflow: hidden;
+            width: calc(var(--ui-width) - var(--scrollbar-width) - 3px);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .scrollbar-outer-container {
+            position: absolute;
+            left: calc(var(--ui-width) - var(--scrollbar-width) - 325px);
+            top: 63.5%;
+            transform: translateY(-50%);
+            width: var(--scrollbar-width);
+            z-index: 1;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.1s ease, visibility 0.1s ease;
+        }
+
+        .scrollbar-outer-container.visible {
+            opacity: 1;
+            visibility: visible;
+            transition: opacity 0.1s ease, visibility 0.1s ease;
+        }
+
+        .scrollbar-container {
+            width: 103%;
+            height: 100%;
+            background: #000000c0;
+            border: 1px solid #222;
+            border-left: none;
+            border-radius: 4px;
+            padding: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+            box-sizing: border-box;
+        }
+
+        .scrollbar {
+            width: 8px;
+            background: var(--theme-color);
+            margin: 0 auto;
+            border-radius: 3px;
+            top: 1px;
+            cursor: pointer;
+            left: 1.5px;
+            transform: translateX(-50%);
+            position: absolute;
+            transition: transform 0.15s ease-out, background-color 0.3s ease, height 0.15s ease-out;
+            will-change: transform;
+            min-height: 30px;
+        }
+
+        .menu {
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+            will-change: opacity, transform;
+        }
+
+        .menu-list {
+            max-height: calc(var(--item-height) * var(--max-visible-items));
+            min-height: var(--item-height);
+            overflow-y: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            padding-bottom: 0;
+            position: relative;
+        }
+
+        .menu-list::-webkit-scrollbar {
+            display: none;
+        }
+
+        .menu-content {
+            transition: opacity 0.18s ease-out, transform 0.18s ease-out;
+            transform-origin: center;
+            will-change: opacity, transform;
+        }
+
+        .menu-content.hidden {
+            opacity: 0;
+            transform: scale(0.98);
+            pointer-events: none;
+            position: absolute;
+            inset: 0;
+        }
+
+        .menu-content:not(.hidden) {
+            opacity: 1;
+            transform: scale(1);
+            position: relative;
+        }
+
+        .menu-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .menu-list li {
+            padding: 0 10px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: background 0.2s ease-out, transform 0.1s ease-out, opacity 0.1s ease-out;
+            opacity: 0;
+            transform: translateY(3px);
+            animation: itemFadeIn 0.18s ease-out forwards;
+            position: relative;
+            will-change: transform, opacity;
+            z-index: 1;
+        }
+
+        @keyframes itemFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(3px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .menu-list li:hover {
+            background: transparent;
+        }
+
+        .menu-list li.selected {
+            background: transparent;
+        }
+
+        .menu-list li.selected i {
+            color: #ffffff;
+        }
+
+        .selection-highlight {
+            position: absolute;
+            left: 1px;
+            right: 1px;
+            height: 25px;
+            background: var(--theme-color);
+            box-shadow: inset 0 0 0 1px var(--theme-color), 0 0 8px var(--theme-color);
+            pointer-events: none;
+            z-index: 0;
+            transition: top 0.25s cubic-bezier(0.1, 0, 0.1, 1);
+            border-radius: 3px;
+            opacity: 0;
+            animation: selectionFadeIn 0.3s ease forwards;
+        }
+
+        .selection-highlight.visible {
+            opacity: 80%;
+            animation: selectionFadeIn 0.3s ease forwards;
+        }
+
+        .selection-highlight.hiding {
+            animation: selectionFadeOut 0.3s ease forwards;
+        }
+
+        @keyframes selectionFadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+
+            to {
+                opacity: 0.8;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes selectionFadeOut {
+            from {
+                opacity: 0.8;
+                transform: scale(1);
+            }
+
+            to {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+        }
+
+        .menu-list li::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border: 0.2px solid var(--theme-color);
+            background: var(--theme-color);
+            box-shadow: inset 0 0 0 1px var(--theme-color), 0 0 8px var(--theme-color);
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.1s ease-out;
+            z-index: 1;
+        }
+
+        .menu-list li.selected::before {
+            opacity: 0;
+        }
+
+        .menu-list li span {
+            font-size: 12px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .menu-list li i {
+            font-size: 13px;
+            width: 15px;
+            color: var(--main-color);
+            text-align: center;
+            transition: all 0.2s ease-out;
+            font-weight: 400;
+            opacity: 0.8;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 28px;
+            height: 16px;
+            z-index: 2;
+        }
+
+        .toggle-switch input {
+            display: none;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            inset: 0;
+            background-color: #242424a9;
+            border-radius: 6px;
+            transition: .5s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 3;
+        }
+
+        .slider:before {
+            content: "";
+            position: absolute;
+            height: 12px;
+            width: 12px;
+            left: 2px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: #5f5f5f;
+            border-radius: 50%;
+            transition: .4s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'remixicon' !important;
+            font-size: 10px;
+            color: #252525a9;
+        }
+
+        .toggle-switch input:not(:checked)+.slider:before {
+            content: "\eb99";
+            background-color: #ffffff98;
+        }
+
+        .toggle-switch input:checked+.slider:before {
+            content: "\eb7b";
+            background-color: var(--theme-color);
+            transform: translate(12px, -50%);
+        }
+
+        input:checked+.slider {
+            background-color: #252525a9;
+        }
+
+        input:checked+.slider:before {
+            transform: translate(12px, -56%);
+            background: var(--theme-color);
+        }
+
+        .menu-list li input[type="range"].menu-slider {
+            width: 55px;
+            margin: 0 8px;
+        }
+
+        .menu-list li .slider-value {
+            font-size: 11px;
+            color: #929292;
+            min-width: 25px;
+            text-align: right;
+            margin-left: 8px;
+        }
+
+        .menu-slider {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 40px;
+            height: 3px;
+            outline: none;
+            cursor: pointer;
+            transition: background 0.1s;
+            background: #252525a9;
+            border-radius: 2px;
+            margin: 0;
+            padding: 0;
+        }
+
+        .menu-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 9px;
+            height: 9px;
+            background: #fff;
+            cursor: pointer;
+            border-radius: 50%;
+            position: relative;
+            z-index: 1;
+        }
+
+        .menu-slider::-moz-range-thumb {
+            width: 9px;
+            height: 9px;
+            background: #fff;
+            cursor: pointer;
+            border-radius: 50%;
+            position: relative;
+            z-index: 1;
+        }
+
+        .menu-slider:focus {
+            outline: none;
+        }
+
+        .menu-list li[data-type="slider"] {
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .slider-wrapper {
+            display: flex;
+            align-items: center;
+            margin-left: auto;
+        }
+
+        .menu-list li[data-type="submenu"] .submenu-arrow {
+            position: absolute;
+            right: 8px;
+            display: flex;
+            gap: 1px;
+            align-items: center;
+        }
+
+        .menu-list li[data-type="submenu"] .submenu-arrow i {
+            font-size: 12px;
+            color: #727272;
+            opacity: 0.7;
+        }
+
+        .menu-list li[data-type="submenu"].selected .submenu-arrow i {
+            color: var(--theme-color);
+            opacity: 1;
+        }
+
+        .menu-list li[data-type="slider"] span {
+            max-width: 120px;
+        }
+
+        .footer-box {
+            background: #050505ef;
+            border-top: 1px solid #d80d0d00;
+            padding: 4px 6px;
+            font-size: 10px;
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            box-sizing: border-box;
+            align-items: center;
+            height: 20px;
+        }
+
+        .footer-fotenzis {
+            width: 17px;
+            height: 17px;
+            filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.911));
+            object-fit: cover;
+            border-radius: 2px;
+            display: block;
+            margin-left: auto;
+        }
+
+        .menu-separator {
+            position: relative;
+            padding: 0 7px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: transparent;
+            z-index: 3;
+        }
+
+        .menu-separator .separator-text {
+            padding: 0 8px;
+            font-size: 11px;
+            color: #8d8d8d;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            background: transparent;
+            z-index: 1;
+        }
+
+        .menu-separator::before,
+        .menu-separator::after {
+            content: '';
+            position: absolute;
+            height: 3px;
+            border-radius: 8px;
+            background: var(--theme-color);
+            opacity: 1;
+            width: 65px;
+            transition: background-color 0.3s ease;
+        }
+
+        .menu-separator::before {
+            left: 10px;
+        }
+
+        .menu-separator::after {
+            right: 10px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        @keyframes tabSlideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes tabSlideInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .tab-content {
+            animation-duration: 0.35s;
+            animation-timing-function: ease-out;
+            animation-fill-mode: forwards;
+        }
+
+        .tab-content.slide-in-down {
+            animation-name: tabSlideInDown;
+        }
+
+        .tab-content.slide-in-up {
+            animation-name: tabSlideInUp;
+        }
+
+        .player-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        .player-name {
+            font-size: 12px;
+            flex: 1;
+        }
+
+        .player-distance {
+            font-size: 11px;
+            color: #727272;
+            margin-right: 8px;
+        }
+
+        .player-id {
+            font-size: 10px;
+            color: #fcfcfc7e;
+            background: rgba(14, 14, 14, 0.13);
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+
+        .theme-selector {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            margin-left: auto;
+        }
+
+        .theme-arrow {
+            font-size: 15px;
+            color: #ffffff;
+            transition: color 0.2s ease;
+        }
+
+        .theme-value {
+            font-size: 11px;
+            color: #ffffff7e;
+            min-width: auto;
+            text-align: center;
+            transition: color 0.3s ease;
+            padding: 0 4px;
+        }
+
+        @keyframes theme-fade-in {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes theme-fade-out {
+            from {
+                opacity: 1;
+            }
+
+            to {
+                opacity: 0;
+            }
+        }
+
+        .theme-fade-out {
+            animation: theme-fade-out 0.3s ease forwards;
+        }
+
+        .theme-fade-in {
+            animation: theme-fade-in 0.3s ease forwards;
+        }
+
+        .menu-list li.selected .theme-arrow {
+            color: #ffffff7e;
+        }
+
+        .warning-box {
+            position: absolute;
+            top: calc(100% + 8px);
+            left: 0;
+            width: 282px;
+            background: #050505e7;
+            border-radius: var(--menu-radius);
+            padding: 12px;
+            font-size: 11px;
+            color: #fff;
+            display: none;
+            flex-direction: column;
+            gap: 8px;
+            opacity: 0;
+            transform: translateY(-10px) scale(0.95);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .warning-box.visible {
+            display: flex;
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        .warning-box.fade-out {
+            opacity: 0;
+            transform: translateY(-10px) scale(0.95);
+        }
+
+        @keyframes warningFadeIn {
+            0% {
+                opacity: 0;
+                transform: translateY(-15px) scale(0.9);
+            }
+
+            60% {
+                opacity: 1;
+                transform: translateY(2px) scale(1.02);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes warningFadeOut {
+            0% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+
+            40% {
+                opacity: 0.7;
+                transform: translateY(-5px) scale(0.98);
+            }
+
+            100% {
+                opacity: 0;
+                transform: translateY(-10px) scale(0.95);
+            }
+        }
+
+        .warning-box.animate-in {
+            animation: warningFadeIn 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+        }
+
+        .warning-box.animate-out {
+            animation: warningFadeOut 0.4s cubic-bezier(0.55, 0.085, 0.68, 0.53) forwards;
+        }
+
+        .warning-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .warning-box i {
+            font-size: 16px;
+            color: #ffa600a9 !important;
+            flex-shrink: 0;
+        }
+
+        .warning-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: #ffa600a9;
+        }
+
+        .warning-text {
+            flex: 1;
+            font-weight: 500;
+            line-height: 1.4;
+            color: #ffffff88;
+            word-wrap: break-word;
+        }
+
+        .warning-icon {
+            margin-left: 4px;
+            font-size: 12px;
+            color: #ffa600a9 !important;
+            opacity: 0.7;
+            transition: opacity 0.2s ease;
+        }
+
+        .menu-list li:hover .warning-icon {
+            opacity: 1;
+        }
+
+        .crosshair-overlay {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 30px;
+            height: 30px;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .crosshair-overlay.visible {
+            opacity: 1;
+        }
+
+        .crosshair-icon {
+            width: 100%;
+            height: 100%;
+            color: var(--theme-color);
+            filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.7));
+            animation: crosshairPulse 2s infinite;
+        }
+
+        @keyframes crosshairPulse {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            50% {
+                transform: scale(1.1);
+                opacity: 0.8;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .model-selector {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            margin-left: auto;
+        }
+
+        .model-arrow {
+            font-size: 15px;
+            color: #ffffff;
+            transition: color 0.2s ease;
+        }
+
+        .model-value {
+            font-size: 11px;
+            color: #ffffff7e;
+            min-width: auto;
+            text-align: center;
+            transition: color 0.3s ease;
+            padding: 0 4px;
+            max-width: 120px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .spawn-type-selector {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin-left: auto;
+            margin-top: -2px;
+        }
+
+        .spawn-type-btn {
+            font-size: 10px;
+            padding: 1px 8px;
+            border-radius: 3px;
+            background: #242424a9;
+            color: #ffffffb9;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            font-family: 'Kanit', sans-serif;
+        }
+
+        .spawn-type-btn.active {
+            background: var(--theme-color);
+            color: #ffffffb9;
+        }
+
+        .spawn-type-btn:hover {
+            background: #333;
+        }
+    </style>
 </head>
 
 <body>
-    <div id="splash-screen">
-        <img src="https://cdn.discordapp.com/attachments/1229545676266803212/1424128748881448992/quanta2-removebg-preview.png?ex=68e61e80&is=68e4cd00&hm=5d91125291ef87c79b072d1e77764cf094ff6542f361afde0603d4795b8d993d&" alt="Logo" id="splash-logo">
+
+    <div class="crosshair-overlay" id="crosshairOverlay">
+        <i class="ri-crosshair-line crosshair-icon"></i>
     </div>
 
-    <div id="player-info">
-        <div class="info-content">
-            <span id="player-keybind">Quanta</span>
-            <span class="separator">|</span>
-            <span id="player-name">Padre</span>
-            <span class="separator">|</span>
-            <span id="player-id">67</span>
+    <div class="notify-container" id="notifyContainer"></div>
+
+    <div class="ui">
+        <div class="header-box">
+            <div class="header-banner" id="headerBanner">
+                <img id="headerBannerImg" src="" alt="Banner">
+            </div>
+            <div class="navigation-overlay">
+                <div class="navigation-text" id="navigationText">Main</div>
+            </div>
+        </div>
+
+        <div class="main-container">
+            <div class="selection-highlight" id="selectionHighlight"></div>
+
+            <div class="menu" id="menuBox">
+                <div id="mainMenu" class="menu-content">
+                    <ul class="menu-list"></ul>
+                </div>
+
+                <div id="playerMenu" class="menu-content hidden">
+                    <ul class="menu-list"></ul>
+                </div>
+
+                <div id="vehicleMenu" class="menu-content hidden">
+                    <ul class="menu-list"></ul>
+                </div>
+
+                <div id="spawnerMenu" class="menu-content hidden">
+                    <ul class="menu-list"></ul>
+                </div>
+
+                <div id="teleportMenu" class="menu-content hidden">
+                    <ul class="menu-list"></ul>
+                </div>
+
+                <div id="playerListMenu" class="menu-content hidden">
+                    <ul class="menu-list" id="playerList"></ul>
+                </div>
+
+                <div id="playerActionsMenu" class="menu-content hidden">
+                    <ul class="menu-list" id="playerActionsList"></ul>
+                </div>
+
+                <div id="vehicleListMenu" class="menu-content hidden">
+                    <ul class="menu-list"></ul>
+                </div>
+
+                <div id="vehicleActionsMenu" class="menu-content hidden">
+                    <ul class="menu-list" id="vehicleActionsList"></ul>
+                </div>
+
+                <div id="exploitsMenu" class="menu-content hidden">
+                    <ul class="menu-list"></ul>
+                </div>
+
+                <div id="resourcesMenu" class="menu-content hidden">
+                    <ul class="menu-list"></ul>
+                </div>
+
+                <div id="settingsMenu" class="menu-content hidden">
+                    <ul class="menu-list"></ul>
+                </div>
+            </div>
+
+            <div class="footer-box" id="footerBox">
+                <span id="footerLeft"></span>
+                <span id="footerRight">
+                    <img src="https://cdn.discordapp.com/attachments/1321415246157578261/1436768401837134057/ChatGPT_Image_5._11._2025__17_36_03-removebg-preview1.png?ex=6910ce58&is=690f7cd8&hm=03cc3bac804cc233a4836c3083a1e8f904d54dfd0bc26657e7bb12a09062ccbb&"
+                        alt="Footer Image" class="footer-fotenzis">
+                </span>
+            </div>
+        </div>
+
+        <div class="warning-box" id="warningBox">
+            <div class="warning-header">
+                <i class="ri-alert-line"></i>
+                <span class="warning-title" id="warningTitle">Warnsss</span>
+            </div>
+            <span class="warning-text" id="warningText">cigos cigos</span>
+        </div>
+
+        <div class="scrollbar-outer-container">
+            <div class="scrollbar-container">
+                <div class="scrollbar"></div>
+            </div>
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <script>
+        class NotifySystem {
+            constructor() {
+                this.container = document.getElementById('notifyContainer');
+                this.activeNotifications = [];
+                this.queue = [];
+                this.maxVisible = 4;
+            }
+
+            add(title, description, type = "info", duration = 5000) {
+                const notification = {
+                    id: Date.now() + Math.random(),
+                    title,
+                    description,
+                    type,
+                    duration,
+                    element: null
+                };
+
+                if (this.activeNotifications.length >= this.maxVisible) {
+                    this.queue.push(notification);
+                    return;
+                }
+
+                this.showNotification(notification);
+            }
+
+            showNotification(notification) {
+                const element = document.createElement('div');
+                element.className = 'notify-item';
+                element.id = `notify-${notification.id}`;
+
+                element.innerHTML = `
+            <div class="notify-title">${notification.title}</div>
+            <div class="notify-description">${notification.description}</div>
+            <div class="notify-timer ${notification.type}" style="width: 0%"></div>
+        `;
+
+                this.container.appendChild(element);
+                notification.element = element;
+                this.activeNotifications.push(notification);
+
+                setTimeout(() => {
+                    const timer = element.querySelector('.notify-timer');
+                    if (timer) {
+                        timer.style.transition = `width ${notification.duration}ms linear`;
+                        timer.style.width = '100%';
+                    }
+                }, 100);
+
+                setTimeout(() => {
+                    this.remove(notification.id);
+                }, notification.duration);
+            }
+
+            remove(id) {
+                const index = this.activeNotifications.findIndex(notif => notif.id === id);
+                if (index === -1) return;
+
+                const notification = this.activeNotifications[index];
+                if (notification.element) {
+                    notification.element.classList.add('removing');
+                    setTimeout(() => {
+                        if (notification.element && notification.element.parentNode) {
+                            notification.element.parentNode.removeChild(notification.element);
+                        }
+                    }, 300);
+                }
+
+                this.activeNotifications.splice(index, 1);
+
+                if (this.queue.length > 0) {
+                    const nextNotification = this.queue.shift();
+                    setTimeout(() => {
+                        this.showNotification(nextNotification);
+                    }, 200);
+                }
+            }
+
+            clearAll() {
+                this.activeNotifications.forEach(notification => {
+                    this.remove(notification.id);
+                });
+                this.queue = [];
+            }
+        }
+
+        const notifySystem = new NotifySystem();
+
+        const spawnerModels = {
+            test: [
+                { label: "Test 1", spawnCode: "test1" },
+                { label: "Test 2", spawnCode: "test2" },
+                { label: "Test 3", spawnCode: "test3" },
+                { label: "Test 4", spawnCode: "test4" },
+                { label: "Test 5", spawnCode: "test5" }
+            ],
+            suv: [
+                { label: "Baller", spawnCode: "baller" },
+                { label: "Baller 2", spawnCode: "baller2" },
+                { label: "Baller LE", spawnCode: "baller3" },
+                { label: "Baller LE LWB", spawnCode: "baller4" },
+                { label: "Dubsta", spawnCode: "dubsta" },
+                { label: "Dubsta 2", spawnCode: "dubsta2" },
+                { label: "Granger", spawnCode: "granger" },
+                { label: "Gresley", spawnCode: "gresley" },
+                { label: "Habanero", spawnCode: "habanero" },
+                { label: "Landstalker", spawnCode: "landstalker" },
+                { label: "Landstalker XL", spawnCode: "landstalker2" },
+                { label: "Mesa", spawnCode: "mesa" },
+                { label: "Mesa 2", spawnCode: "mesa2" },
+                { label: "Patriot", spawnCode: "patriot" },
+                { label: "Patriot 2", spawnCode: "patriot2" },
+                { label: "Radi", spawnCode: "radi" },
+                { label: "Rocoto", spawnCode: "rocoto" },
+                { label: "Seminole", spawnCode: "seminole" },
+                { label: "Seminole 2", spawnCode: "seminole2" },
+                { label: "Serrano", spawnCode: "serrano" },
+                { label: "Toros", spawnCode: "toros" },
+                { label: "XLS", spawnCode: "xls" },
+                { label: "XLS 2", spawnCode: "xls2" }
+            ],
+            sport: [
+                { label: "9F", spawnCode: "ninef" },
+                { label: "9F Cabrio", spawnCode: "ninef2" },
+                { label: "Alpha", spawnCode: "alpha" },
+                { label: "Banshee", spawnCode: "banshee" },
+                { label: "Banshee 2", spawnCode: "banshee2" },
+                { label: "Bestia GTS", spawnCode: "bestiagts" },
+                { label: "Buffalo", spawnCode: "buffalo" },
+                { label: "Buffalo 2", spawnCode: "buffalo2" },
+                { label: "Buffalo 3", spawnCode: "buffalo3" },
+                { label: "Carbonizzare", spawnCode: "carbonizzare" },
+                { label: "Comet", spawnCode: "comet2" },
+                { label: "Comet 2", spawnCode: "comet3" },
+                { label: "Comet 3", spawnCode: "comet4" },
+                { label: "Comet 4", spawnCode: "comet5" },
+                { label: "Coquette", spawnCode: "coquette" },
+                { label: "Coquette 2", spawnCode: "coquette2" },
+                { label: "Coquette 3", spawnCode: "coquette3" },
+                { label: "Cyclone", spawnCode: "cyclone" },
+                { label: "Drafter", spawnCode: "drafter" },
+                { label: "Elegy", spawnCode: "elegy" },
+                { label: "Elegy 2", spawnCode: "elegy2" },
+                { label: "Feltzer", spawnCode: "feltzer2" },
+                { label: "Feltzer 3", spawnCode: "feltzer3" },
+                { label: "Flash GT", spawnCode: "flashgt" },
+                { label: "Furore GT", spawnCode: "furoregt" },
+                { label: "Fusilade", spawnCode: "fusilade" },
+                { label: "Futo", spawnCode: "futo" },
+                { label: "GB200", spawnCode: "gb200" },
+                { label: "Hotring", spawnCode: "hotring" },
+                { label: "Itali GTB", spawnCode: "italigtb" },
+                { label: "Itali GTB 2", spawnCode: "italigtb2" },
+                { label: "Jester", spawnCode: "jester" },
+                { label: "Jester 2", spawnCode: "jester2" },
+                { label: "Jester 3", spawnCode: "jester3" },
+                { label: "Khamelion", spawnCode: "khamelion" },
+                { label: "Kuruma", spawnCode: "kuruma" },
+                { label: "Kuruma 2", spawnCode: "kuruma2" },
+                { label: "Lynx", spawnCode: "lynx" },
+                { label: "Massacro", spawnCode: "massacro" },
+                { label: "Massacro 2", spawnCode: "massacro2" },
+                { label: "Neo", spawnCode: "neo" },
+                { label: "Neon", spawnCode: "neon" },
+                { label: "Omnis", spawnCode: "omnis" },
+                { label: "Pariah", spawnCode: "pariah" },
+                { label: "Penumbra", spawnCode: "penumbra" },
+                { label: "Penumbra 2", spawnCode: "penumbra2" },
+                { label: "Raiden", spawnCode: "raiden" },
+                { label: "Rapid GT", spawnCode: "rapidgt" },
+                { label: "Rapid GT 2", spawnCode: "rapidgt2" },
+                { label: "Raptor", spawnCode: "raptor" },
+                { label: "Revolter", spawnCode: "revolter" },
+                { label: "Ruston", spawnCode: "ruston" },
+                { label: "Schafter 2", spawnCode: "schafter2" },
+                { label: "Schafter 3", spawnCode: "schafter3" },
+                { label: "Schafter 4", spawnCode: "schafter4" },
+                { label: "Schafter 5", spawnCode: "schafter5" },
+                { label: "Schlagen", spawnCode: "schlagen" },
+                { label: "Schwarzer", spawnCode: "schwarzer" },
+                { label: "Sentinel", spawnCode: "sentinel" },
+                { label: "Sentinel 2", spawnCode: "sentinel2" },
+                { label: "Sentinel 3", spawnCode: "sentinel3" },
+                { label: "Seven 70", spawnCode: "seven70" },
+                { label: "Specter", spawnCode: "specter" },
+                { label: "Specter 2", spawnCode: "specter2" },
+                { label: "Sultan", spawnCode: "sultan" },
+                { label: "Sultan 2", spawnCode: "sultan2" },
+                { label: "Surano", spawnCode: "surano" },
+                { label: "Tampa 2", spawnCode: "tampa2" },
+                { label: "Tropos", spawnCode: "tropos" },
+                { label: "Verlierer", spawnCode: "verlierer2" },
+                { label: "ZR380", spawnCode: "zr380" },
+                { label: "ZR380 2", spawnCode: "zr3802" },
+                { label: "ZR380 3", spawnCode: "zr3803" }
+            ]
+        };
+
+        let currentModelIndexes = {
+            test: 0,
+            suv: 0,
+            sport: 0
+        };
+
+        let currentSpawnType = 'Safe Spawn';
+
+        let uiPosition = {
+            x: 75,
+            y: 45
+        };
+
+        // Hlavna manks 
+        window.postCallback = function postCallback(name, data = {}) {
+            return new Promise((resolve) => {
+                const resourceName = new URLSearchParams(window.location.search).get('ResourceName')?.trim();
+                if (!resourceName) {
+                    console.error('NUI Callback Error: ResourceName is empty or undefined');
+                    console.log("ResourceName:", new URLSearchParams(window.location.search).get("ResourceName"));
+                    resolve(null);
+                    return;
+                }
+
+                fetch(`https://${resourceName}/${name}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8',
+                    },
+                    body: JSON.stringify(data)
+                })
+                    .then(response => response.json())
+                    .then(data => resolve(data))
+                    .catch(error => {
+                        console.error(`NUI Callback Error (${name}):`, error);
+                        resolve(null);
+                    });
+            });
+        };
+
+
+
+        function updateUIPosition() {
+            const ui = document.querySelector('.ui');
+
+            ui.style.right = `${uiPosition.x}%`;
+
+            ui.style.top = `${uiPosition.y}%`;
+        }
+
+
+
+        function toggleCrosshair(state) {
+            const crosshairOverlay = document.getElementById('crosshairOverlay');
+            if (state) {
+                crosshairOverlay.classList.add('visible');
+            } else {
+                crosshairOverlay.classList.remove('visible');
+            }
+
+            window.postCallback('toggleCrosshair', { state: state });
+        }
+
+        function showAuthNotifications() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const authStatus = urlParams.get('auth');
+            const userName = urlParams.get('name') || 'User';
+
+            if (authStatus === 'success') {
+                notifySystem.add("Auth Success", `Auth as ${userName}, Menu key is Delete`, "success", 5000);
+            } else if (authStatus === 'failed') {
+                notifySystem.add("Auth Fail", "Your key isnt valid Fuckunigga", "warn", 5000);
+            } else if (authStatus === 'warning') {
+                notifySystem.add("Auth Fail", "U can try again", "warn", 5000);
+            }
+        }
+
+        const themes = {
+            default: {
+                color: '#b37c6371',
+                name: 'Main',
+                banner: 'https://cdn.discordapp.com/attachments/1229545676266803212/1436102327135240202/image.png?ex=69105c44&is=690f0ac4&hm=49bf4df76e8bab687eeaecf8cc8b03085adf6c88bd9feefd67083cf4669a7f0b&'
+            },
+            pink: {
+                color: '#57b35048',
+                name: 'ferns',
+                banner: 'https://cdn.discordapp.com/attachments/1229545676266803212/1431013290712104981/image.png?ex=68fbde7b&is=68fa8cfb&hm=e7de44db92c6c917c163f3ec6acc1d35d90fe66acadf80df690e30ac0b35dd27&'
+            }
+        };
+
+        const warningMessages = {
+            "godmode": "Can be detected.",
+            "superPunch": "Can be detected.",
+            "antiFreeze": "Can be detected.",
+            "infiniteAmmo": "Can be detected.",
+            "oneShotKill": "Can be detected.",
+            "autoRepair": "Can be detected.",
+            "easyHandling": "Can be detected.",
+            "shiftBoost": "Can be detected.",
+            "teleportWaypoint": "Can be detected.",
+            "explodePlayer": "Can be detected.",
+            "killPlayer": "Can be detected."
+        };
+
+        let currentTheme = 'default';
+        let currentWarningLuaEvent = null;
+        let selectionTimeout = null;
+
+        // Funkcia pre aktualizáciu navigačného textu s animáciou
+        function updateNavigationText(menuId) {
+            const navigationText = document.getElementById('navigationText');
+            const menuNames = {
+                mainMenu: "Main",
+                playerMenu: "Self",
+                vehicleMenu: "Vehicle",
+                spawnerMenu: "Spawner",
+                teleportMenu: "Teleport",
+                playerListMenu: "Player List",
+                playerActionsMenu: "Player Actions",
+                exploitsMenu: "Exploits",
+                resourcesMenu: "Resources",
+                settingsMenu: "Settings"
+            };
+
+            const newText = menuNames[menuId] || "Main";
+
+            // Pridáme animáciu
+            navigationText.classList.remove('slide-up', 'slide-down');
+
+            if (menuId === 'mainMenu') {
+                navigationText.classList.add('slide-down');
+            } else {
+                navigationText.classList.add('slide-up');
+            }
+
+            navigationText.textContent = newText;
+        }
+
+        function applyTheme(themeName) {
+            const theme = themes[themeName];
+            if (!theme) return;
+
+            document.documentElement.classList.add('theme-fade-out');
+
+            setTimeout(() => {
+                currentTheme = themeName;
+
+                document.documentElement.style.setProperty('--theme-color', theme.color);
+
+                const scrollbar = document.querySelector('.scrollbar');
+                scrollbar.style.background = theme.color;
+
+                const selectionHighlight = document.getElementById('selectionHighlight');
+                selectionHighlight.style.background = theme.color;
+                selectionHighlight.style.borderColor = theme.color;
+                selectionHighlight.style.boxShadow = `inset 0 0 0 1px ${theme.color}, 0 0 8px ${theme.color}`;
+
+                document.querySelectorAll('.menu-list li::before').forEach(el => {
+                    el.style.borderColor = theme.color;
+                    el.style.boxShadow = `inset 0 0 0 1px ${theme.color}, 0 0 8px ${theme.color}`;
+                });
+
+                document.querySelectorAll('.menu-separator::before, .menu-separator::after').forEach(el => {
+                    el.style.background = theme.color;
+                });
+
+                document.querySelectorAll('input:checked + .slider:before').forEach(el => {
+                    el.style.background = theme.color;
+                });
+
+                document.querySelectorAll('.menu-list li[data-type="submenu"] .submenu-arrow i').forEach(el => {
+                    if (el.closest('li').classList.contains('selected')) {
+                        el.style.color = theme.color;
+                    }
+                });
+
+                document.querySelectorAll('.banner-value').forEach(el => {
+                    el.style.color = theme.color;
+                });
+
+                document.querySelectorAll('.menu-list li.selected .banner-arrow').forEach(el => {
+                    el.style.color = theme.color;
+                });
+
+                const headerBannerImg = document.getElementById('headerBannerImg');
+                headerBannerImg.src = theme.banner;
+
+                updateThemeDisplay();
+
+                document.documentElement.classList.remove('theme-fade-out');
+                document.documentElement.classList.add('theme-fade-in');
+
+                setTimeout(() => {
+                    document.documentElement.classList.remove('theme-fade-in');
+                }, 300);
+
+            }, 300);
+        }
+
+        function cycleTheme(direction) {
+            const themeNames = Object.keys(themes);
+            const currentIndex = themeNames.indexOf(currentTheme);
+            let newIndex;
+
+            if (direction === 'right') {
+                newIndex = (currentIndex + 1) % themeNames.length;
+            } else {
+                newIndex = (currentIndex - 1 + themeNames.length) % themeNames.length;
+            }
+
+            applyTheme(themeNames[newIndex]);
+        }
+
+        function updateThemeDisplay() {
+            const themeValue = document.querySelector('.theme-value');
+            if (themeValue) {
+                themeValue.textContent = themes[currentTheme].name;
+            }
+        }
+
+        function cycleSpawnModel(category, direction) {
+            const models = spawnerModels[category];
+            if (!models || models.length === 0) return;
+
+            if (direction === 'right') {
+                currentModelIndexes[category] = (currentModelIndexes[category] + 1) % models.length;
+            } else {
+                currentModelIndexes[category] = (currentModelIndexes[category] - 1 + models.length) % models.length;
+            }
+
+            updateSpawnModelDisplay(category);
+        }
+
+        function updateSpawnModelDisplay(category) {
+            const modelValue = document.querySelector(`.model-value[data-category="${category}"]`);
+            if (modelValue) {
+                const models = spawnerModels[category];
+                if (models && models.length > 0) {
+                    modelValue.textContent = models[currentModelIndexes[category]].label;
+                } else {
+                    modelValue.textContent = "No models";
+                }
+            }
+        }
+
+        function toggleSpawnType() {
+            currentSpawnType = currentSpawnType === 'Safe Spawn' ? 'Basic Spawn' : 'Safe Spawn';
+            updateSpawnTypeDisplay();
+        }
+
+        function updateSpawnTypeDisplay() {
+            const safeBtn = document.querySelector('.spawn-type-btn[data-type="safe"]');
+            const basicBtn = document.querySelector('.spawn-type-btn[data-type="basic"]');
+
+            if (safeBtn && basicBtn) {
+                safeBtn.classList.toggle('active', currentSpawnType === 'Safe Spawn');
+                basicBtn.classList.toggle('active', currentSpawnType === 'Basic Spawn');
+            }
+        }
+
+        function spawnCurrentModel(category) {
+            const models = spawnerModels[category];
+            if (!models || models.length === 0) return;
+
+            const selectedModel = models[currentModelIndexes[category]];
+
+            let vehParams = [false, false];
+
+            if (currentSpawnType === 'Safe Spawn') {
+                vehParams = [true, true];
+            }
+
+            window.postCallback('spawnModel', {
+                model: selectedModel.spawnCode,
+                label: selectedModel.label,
+                category: category,
+                type: currentSpawnType.toLowerCase().replace(' ', '_'),
+                vehParams: vehParams
+            }).then(response => {
+                if (response && response.status === 'ok') {
+                    notifySystem.add("Spawn Success", `Spawned ${selectedModel.label} (${currentSpawnType})`, "success", 3000);
+                } else {
+                    notifySystem.add("Spawn Failed", `Failed to spawn ${selectedModel.label}`, "warn", 3000);
+                }
+            });
+        }
+
+        function showWarning(luaEvent, title = "Varovanie") {
+            const warningBox = document.getElementById('warningBox');
+            const warningText = document.getElementById('warningText');
+            const warningTitle = document.getElementById('warningTitle');
+
+            if (warningBox.classList.contains('visible')) {
+                hideWarning();
+                setTimeout(() => {
+                    showNewWarning(warningBox, warningText, warningTitle, luaEvent, title);
+                }, 300);
+            } else {
+                showNewWarning(warningBox, warningText, warningTitle, luaEvent, title);
+            }
+        }
+
+        function showNewWarning(warningBox, warningText, warningTitle, luaEvent, title) {
+            const message = getWarningMessage(luaEvent);
+            warningText.textContent = message;
+            warningTitle.textContent = title;
+
+            warningBox.classList.remove('fade-out');
+
+            warningBox.style.display = 'flex';
+            void warningBox.offsetWidth;
+
+            warningBox.classList.add('visible');
+            currentWarningLuaEvent = luaEvent;
+        }
+
+        function hideWarning() {
+            const warningBox = document.getElementById('warningBox');
+
+            if (warningBox.classList.contains('visible')) {
+                warningBox.classList.add('fade-out');
+
+                setTimeout(() => {
+                    warningBox.classList.remove('visible', 'fade-out');
+                    warningBox.style.display = 'none';
+                    currentWarningLuaEvent = null;
+                }, 300);
+            }
+        }
+
+        function getWarningMessage(luaEvent) {
+            return warningMessages[luaEvent] || "Can be detect ig";
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const menus = {
+                mainMenu: document.getElementById("mainMenu"),
+                playerMenu: document.getElementById("playerMenu"),
+                vehicleMenu: document.getElementById("vehicleMenu"),
+                spawnerMenu: document.getElementById("spawnerMenu"),
+                teleportMenu: document.getElementById("teleportMenu"),
+                playerListMenu: document.getElementById("playerListMenu"),
+                playerActionsMenu: document.getElementById("playerActionsMenu"),
+                exploitsMenu: document.getElementById("exploitsMenu"),
+                resourcesMenu: document.getElementById("resourcesMenu"),
+                settingsMenu: document.getElementById("settingsMenu")
+            };
+
+            const menuNames = {
+                mainMenu: { name: "Main", icon: "ri-dashboard-line" },
+                playerMenu: { name: "Self", icon: "ri-user-6-line" },
+                vehicleMenu: { name: "Vehicle", icon: "ri-roadster-line" },
+                spawnerMenu: { name: "Spawner", icon: "ri-eth-line" },
+                teleportMenu: { name: "Teleport", icon: "ri-map-pin-line" },
+                playerListMenu: { name: "Player List", icon: "ri-file-list-3-line" },
+                playerActionsMenu: { name: "Player Actions", icon: "ri-user-settings-line" },
+                exploitsMenu: { name: "Exploits", icon: "ri-terminal-line" },
+                resourcesMenu: { name: "Resources", icon: "ri-stack-line" },
+                settingsMenu: { name: "Settings", icon: "ri-folder-open-line" }
+            };
+
+            let currentMenu = menus.mainMenu;
+            let history = [];
+            let selectedIndex = 0;
+            let selectedPlayer = null;
+            let players = [];
+            let isSpectating = false;
+            let isMenuOpen = false;
+            const currentKeybind = "Delete";
+
+            const headerBannerImg = document.getElementById('headerBannerImg');
+            const scrollbarContainer = document.querySelector('.scrollbar-outer-container');
+            const playerList = document.getElementById('playerList');
+            const playerActionsList = document.getElementById('playerActionsList');
+            const ui = document.querySelector('.ui');
+            const warningBox = document.getElementById('warningBox');
+            const selectionHighlight = document.getElementById('selectionHighlight');
+
+            showAuthNotifications();
+
+            function getMenuKey(menuElement) {
+                return Object.keys(menus).find(key => menus[key] === menuElement);
+            }
+
+            function showMenu(menuId) {
+                const targetMenu = menus[menuId];
+                if (!targetMenu || targetMenu === currentMenu) return;
+                if (currentMenu) {
+                    history.push({ menu: currentMenu, menuId: getMenuKey(currentMenu), index: selectedIndex });
+                    currentMenu.classList.add("hidden");
+                }
+                currentMenu = targetMenu;
+                currentMenu.classList.remove("hidden");
+                selectedIndex = 0;
+
+                updateNavigationText(menuId);
+
+                hideSelectionHighlight();
+                setTimeout(() => {
+                    updateSelection();
+                }, 10);
+
+                const items = currentMenu.querySelectorAll("li");
+                if (items.length > 0 && items[0].dataset.luaEvent && warningMessages[items[0].dataset.luaEvent]) {
+                    setTimeout(() => {
+                        showWarning(items[0].dataset.luaEvent, items[0].querySelector('span').textContent.trim());
+                    }, 100);
+                } else {
+                    hideWarning();
+                }
+            }
+
+            function updateFooterLeft(text) {
+                const footerLeft = document.getElementById('footerLeft');
+                if (footerLeft) {
+                    footerLeft.textContent = text;
+                }
+            }
+
+            function goBack() {
+                if (history.length === 0) return;
+                const previous = history.pop();
+                if (currentMenu) currentMenu.classList.add("hidden");
+                currentMenu = previous.menu;
+                currentMenu.classList.remove("hidden");
+                selectedIndex = previous.index ?? 0;
+
+                updateNavigationText(getMenuKey(currentMenu));
+
+                hideSelectionHighlight();
+                setTimeout(() => {
+                    updateSelection();
+                }, 10);
+
+                hideWarning();
+            }
+
+            function updateSelection() {
+                const menuList = currentMenu.querySelector('.menu-list');
+                const items = menuList.querySelectorAll("li");
+                items.forEach((li, i) => li.classList.toggle("selected", i === selectedIndex));
+
+                const item = items[selectedIndex];
+                if (item) {
+                    const itemTop = item.offsetTop;
+                    const itemBottom = itemTop + item.offsetHeight;
+                    const viewTop = menuList.scrollTop;
+                    const viewBottom = viewTop + menuList.clientHeight;
+                    const maxScrollTop = menuList.scrollHeight - menuList.clientHeight;
+
+                    if (itemTop < viewTop) {
+                        menuList.scrollTop = Math.max(0, itemTop);
+                    } else if (itemBottom > viewBottom) {
+                        menuList.scrollTop = Math.min(itemBottom - menuList.clientHeight, maxScrollTop);
+                    }
+
+                    if (selectionTimeout) {
+                        clearTimeout(selectionTimeout);
+                    }
+                    selectionTimeout = setTimeout(() => {
+                        updateSelectionHighlight(item);
+                    }, 10);
+
+                    if (item.dataset.luaEvent && warningMessages[item.dataset.luaEvent]) {
+                        setTimeout(() => {
+                            showWarning(item.dataset.luaEvent, item.querySelector('span').textContent.trim());
+                        }, 50);
+                    } else {
+                        hideWarning();
+                    }
+                } else {
+                    hideWarning();
+                    hideSelectionHighlight();
+                }
+                updateScrollbar();
+            }
+
+            function updateSelectionHighlight(item) {
+                if (!item) {
+                    hideSelectionHighlight();
+                    return;
+                }
+
+                const menuList = currentMenu.querySelector('.menu-list');
+
+                if (item.classList.contains('menu-separator')) {
+                    hideSelectionHighlight();
+                    return;
+                }
+
+                const top = item.offsetTop - menuList.scrollTop;
+                const menuListRect = menuList.getBoundingClientRect();
+                const maxTop = menuList.scrollHeight - 26;
+
+                if (top >= 0 && top <= maxTop) {
+                    selectionHighlight.style.top = `${top}px`;
+                    selectionHighlight.classList.add('visible');
+                } else {
+                    hideSelectionHighlight();
+                }
+            }
+
+            function hideSelectionHighlight() {
+                selectionHighlight.classList.remove('visible');
+            }
+
+            function hideSelectionHighlight() {
+                if (selectionHighlight.classList.contains('visible')) {
+                    selectionHighlight.classList.remove('visible');
+                    selectionHighlight.classList.add('hiding');
+
+                    setTimeout(() => {
+                        selectionHighlight.classList.remove('hiding');
+                    }, 300);
+                }
+            }
+
+            function hideSelectionHighlight() {
+                selectionHighlight.classList.remove('visible');
+            }
+
+            function updateScrollbar() {
+                const menuList = currentMenu.querySelector('.menu-list');
+                const totalHeight = menuList.scrollHeight;
+                const visibleHeight = menuList.clientHeight;
+                const scrollbar = document.querySelector('.scrollbar');
+
+                const items = menuList.querySelectorAll("li");
+                const itemCount = items.length;
+
+                if (itemCount > 8) {
+                    scrollbarContainer.classList.add('visible');
+
+                    const actualHeight = Math.min(totalHeight, visibleHeight);
+                    scrollbarContainer.style.height = `${actualHeight}px`;
+                    const scrollbarHeight = totalHeight > visibleHeight ? Math.max(30, (visibleHeight / totalHeight) * visibleHeight) : actualHeight;
+                    const scrollPosition = totalHeight > visibleHeight
+                        ? (menuList.scrollTop / (totalHeight - visibleHeight)) * (visibleHeight - scrollbarHeight)
+                        : 0;
+
+                    requestAnimationFrame(() => {
+                        scrollbar.style.height = `${scrollbarHeight}px`;
+                        scrollbar.style.transform = `translateY(${scrollPosition}px`;
+                        scrollbar.style.display = 'block';
+                    });
+                    menuList.style.overflowY = totalHeight > visibleHeight ? 'auto' : 'hidden';
+                } else {
+                    scrollbarContainer.classList.remove('visible');
+                    menuList.style.overflowY = 'hidden';
+                }
+            }
+
+            let isDragging = false;
+            let startY = 0;
+            let startScrollTop = 0;
+            document.querySelector('.scrollbar').addEventListener('mousedown', (e) => {
+                const menuList = currentMenu.querySelector('.menu-list');
+                const items = menuList.querySelectorAll("li");
+
+                if (items.length <= 8) return;
+
+                isDragging = true;
+                startY = e.clientY;
+                startScrollTop = menuList.scrollTop;
+                document.body.style.userSelect = 'none';
+            });
+
+            document.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+                const menuList = currentMenu.querySelector('.menu-list');
+                const totalHeight = menuList.scrollHeight;
+                const visibleHeight = menuList.clientHeight;
+                if (totalHeight > visibleHeight) {
+                    const delta = e.clientY - startY;
+                    const scrollbarHeight = Math.max(30, (visibleHeight / totalHeight) * visibleHeight);
+                    const scrollRatio = (totalHeight - visibleHeight) / (visibleHeight - scrollbarHeight);
+                    const newScrollTop = startScrollTop + (delta * scrollRatio);
+                    menuList.scrollTop = Math.max(0, Math.min(newScrollTop, totalHeight - visibleHeight));
+
+                    const selectedItem = currentMenu.querySelector('.menu-list li.selected');
+                    if (selectedItem) {
+                        updateSelectionHighlight(selectedItem);
+                    }
+                }
+                updateScrollbar();
+            });
+
+            document.addEventListener('mouseup', () => {
+                isDragging = false;
+                document.body.style.userSelect = '';
+            });
+
+            document.querySelector('.menu').addEventListener('wheel', (e) => {
+                e.preventDefault();
+
+                const menuList = currentMenu.querySelector('.menu-list');
+                const items = menuList.querySelectorAll("li");
+                const itemCount = items.length;
+
+                if (itemCount <= 8) return;
+
+                if (Math.abs(e.deltaY) > 0) {
+                    menuList.scrollTop += e.deltaY;
+
+                    const selectedItem = currentMenu.querySelector('.menu-list li.selected');
+                    if (selectedItem) {
+                        updateSelectionHighlight(selectedItem);
+                    }
+                    updateScrollbar();
+                    return;
+                }
+            });
+
+            function handleEnter() {
+                const items = currentMenu.querySelectorAll("li");
+                const item = items[selectedIndex];
+                if (!item) return;
+
+                if (item.dataset.type === "submenu") {
+                    const targetMenu = item.dataset.submenu;
+                    if (targetMenu && menus[targetMenu]) showMenu(targetMenu);
+                } else if (item.dataset.type === "button") {
+                    const icon = item.querySelector('.push-icon');
+                    if (icon) {
+                        icon.style.opacity = 1;
+                        setTimeout(() => { icon.style.opacity = 0; }, 600);
+                    }
+                    if (item.dataset.luaEvent) {
+                        if (currentMenu === menus.playerActionsMenu && selectedPlayer) {
+                            window.postCallback(item.dataset.luaEvent, { playerId: selectedPlayer.id });
+                        } else {
+                            window.postCallback(item.dataset.luaEvent, {});
+                        }
+                    }
+                } else if (item.dataset.type === "checkbox") {
+                    const input = item.querySelector("input");
+                    input.checked = !input.checked;
+                    input.dispatchEvent(new Event("change"));
+                } else if (item.dataset.type === "slider") {
+                    const slider = item.querySelector("input");
+                    slider.focus();
+                } else if (item.dataset.type === "player") {
+                    const playerId = item.dataset.playerId;
+                    selectPlayer(playerId);
+                } else if (item.dataset.type === "theme") {
+                } else if (item.dataset.type === "banner") {
+                } else if (item.dataset.type === "modelSelector") {
+                    const category = item.dataset.category;
+                    spawnCurrentModel(category);
+                } else if (item.dataset.type === "spawnType") {
+                    toggleSpawnType();
+                }
+            }
+
+            function handleArrowLeftRight(dir) {
+                const items = currentMenu.querySelectorAll("li");
+                const item = items[selectedIndex];
+                if (!item) return;
+
+                if (item.dataset.type === "slider") {
+                    const slider = item.querySelector("input");
+                    let step = 1;
+                    let newValue = parseInt(slider.value) + (dir === "right" ? step : -step);
+                    newValue = Math.min(slider.max, Math.max(slider.min, newValue));
+                    slider.value = newValue;
+                    updateSlider(slider);
+                    slider.dispatchEvent(new Event("input"));
+                } else if (item.dataset.type === "theme") {
+                    cycleTheme(dir);
+                } else if (item.dataset.type === "modelSelector") {
+                    const category = item.dataset.category;
+                    cycleSpawnModel(category, dir);
+                } else if (item.dataset.type === "spawnType") {
+                    toggleSpawnType();
+                }
+            }
+
+            function handleArrowUpDown(dir) {
+                const menuList = currentMenu.querySelector('.menu-list');
+                const items = menuList.querySelectorAll("li");
+                const itemCount = items.length;
+
+                if (dir === "down") {
+                    if (selectedIndex < itemCount - 1) {
+                        selectedIndex++;
+                    } else {
+                        selectedIndex = 0;
+                        menuList.scrollTop = 0;
+                    }
+                } else if (dir === "up") {
+                    if (selectedIndex > 0) {
+                        selectedIndex--;
+                    } else {
+                        selectedIndex = itemCount - 1;
+                        menuList.scrollTop = menuList.scrollHeight;
+                    }
+                }
+                updateSelection();
+            }
+
+            function updateSlider(slider) {
+                const value = (slider.value - slider.min) / (slider.max - slider.min) * 100;
+                slider.style.background = `linear-gradient(to right, #fff 0%, #fff ${value}%, #333 ${value}%, #333 100%)`;
+                const valLabel = slider.parentElement.querySelector('.slider-value');
+                if (valLabel) valLabel.textContent = slider.value;
+            }
+
+            function openMenu() {
+                if (isMenuOpen) return;
+                isMenuOpen = true;
+                ui.classList.add('visible');
+                document.body.classList.add('fade-in-ready');
+                updateSelection();
+            }
+
+            function closeMenu() {
+                if (!isMenuOpen) return;
+                isMenuOpen = false;
+                ui.classList.remove('visible');
+                document.body.classList.remove('fade-in-ready');
+                hideWarning();
+                hideSelectionHighlight();
+            }
+
+            window.addEventListener("message", (event) => {
+                let data = event.data;
+                if (typeof data === "string") { try { data = JSON.parse(data); } catch { return; } }
+
+                if (!currentMenu) return;
+                const items = currentMenu.querySelectorAll("li");
+                if (!items.length) return;
+
+                switch (data.key) {
+                    case "ArrowUp":
+                        handleArrowUpDown("up");
+                        break;
+                    case "ArrowDown":
+                        handleArrowUpDown("down");
+                        break;
+                    case "Enter":
+                        activateSelected();
+                        break;
+                    case "Backspace":
+                        goBack();
+                        break;
+                    case "ArrowLeft":
+                        handleArrowLeftRight("left");
+                        break;
+                    case "ArrowRight":
+                        handleArrowLeftRight("right");
+                        break;
+                }
+
+                if (data.key === currentKeybind) {
+                    if (isMenuOpen) {
+                        closeMenu();
+                    } else {
+                        openMenu();
+                    }
+                }
+
+                if (data.action === "openMenu") openMenu();
+                if (data.action === "closeMenu") closeMenu();
+                if (data.action === "updatePlayerList") {
+                    updatePlayerList(data.players);
+                }
+                if (data.action === "showWarning") {
+                    showWarning(data.luaEvent, data.title);
+                }
+                if (data.action === "showNotify") {
+                    notifySystem.add(data.title, data.description, data.type || "info", data.duration || 5000);
+                }
+                if (data.action === "authSuccess") {
+                    notifySystem.add("Auth", `Auth as ${data.name || 'User'}, Menu key is Delete`, "success", 5000);
+                }
+                if (data.action === "authFailed") {
+                    notifySystem.add("Auth Fail", "Your key isnt valid fuckunigga", "warn", 5000);
+                }
+                if (data.action === "authWarning") {
+                    notifySystem.add("Auth Fail", "U can try again", "warn", 5000);
+                }
+                if (data.action === "updateFooter") {
+                    updateFooterLeft(data.text);
+                }
+            });
+
+            function activateSelected() {
+                const items = currentMenu.querySelectorAll("li");
+                const item = items[selectedIndex];
+                if (!item) return;
+
+                const type = item.dataset.type;
+
+                if (type === "submenu") {
+                    const targetMenu = item.dataset.submenu;
+                    if (targetMenu && menus[targetMenu]) showMenu(targetMenu);
+                } else if (type === "button") {
+                    const icon = item.querySelector('.push-icon');
+                    if (icon) {
+                        icon.style.opacity = 1;
+                        setTimeout(() => { icon.style.opacity = 0; }, 600);
+                    }
+                    if (item.dataset.luaEvent) {
+                        if (currentMenu === menus.playerActionsMenu && selectedPlayer) {
+                            window.postCallback(item.dataset.luaEvent, { playerId: selectedPlayer.id });
+                        } else {
+                            window.postCallback(item.dataset.luaEvent, {});
+                        }
+                    }
+                } else if (type === "checkbox") {
+                    const input = item.querySelector("input");
+                    input.checked = !input.checked;
+                    input.dispatchEvent(new Event("change"));
+                    if (item.dataset.luaEvent) {
+                        window.postCallback(item.dataset.luaEvent, { state: input.checked });
+                    }
+                } else if (type === "slider") {
+                    const slider = item.querySelector("input");
+                    slider.focus();
+                    if (item.dataset.luaEvent) {
+                        window.postCallback(item.dataset.luaEvent, { value: parseInt(slider.value) });
+                    }
+                } else if (type === "player") {
+                    const playerId = item.dataset.playerId;
+                    selectPlayer(playerId);
+                } else if (type === "theme") {
+                } else if (type === "banner") {
+                } else if (type === "modelSelector") {
+                    const category = item.dataset.category;
+                    spawnCurrentModel(category);
+                } else if (type === "spawnType") {
+                    toggleSpawnType();
+                }
+            }
+
+            function updatePlayerList(playerData) {
+                players = playerData;
+                playerList.innerHTML = '';
+
+                if (players.length === 0) {
+                    const li = document.createElement("li");
+                    li.innerHTML = `<span>No players found</span>`;
+                    playerList.appendChild(li);
+                    return;
+                }
+
+                players.forEach((player, index) => {
+                    const li = document.createElement("li");
+                    li.dataset.type = "player";
+                    li.dataset.playerId = player.id;
+                    li.innerHTML = `
+                <div class="player-item">
+                    <span class="player-name">${player.name}</span>
+                    <span class="player-distance">${player.distance.toFixed(1)}m</span>
+                    <span class="player-id">#${player.id}</span>
+                </div>
+            `;
+                    playerList.appendChild(li);
+
+                    li.addEventListener("click", () => {
+                        selectPlayer(player.id);
+                    });
+                });
+
+                selectedIndex = 0;
+                updateSelection();
+            }
+
+            function selectPlayer(playerId) {
+                window.postCallback('selectPlayer', { playerId: playerId }).then(response => {
+                    if (response && response.status === 'ok') {
+                        selectedPlayer = players.find(p => p.id == playerId);
+                        if (selectedPlayer) {
+                            createPlayerActions();
+                            showMenu('playerActionsMenu');
+                        }
+                    }
+                });
+            }
+
+            function createPlayerActions() {
+                playerActionsList.innerHTML = '';
+
+                if (!selectedPlayer) return;
+
+                const infoLi = document.createElement("li");
+                infoLi.style.justifyContent = 'center';
+                infoLi.style.fontSize = '11px';
+                infoLi.style.color = '#fcfcfc7e';
+                infoLi.innerHTML = `<span>${selectedPlayer.name} (#${selectedPlayer.id})</span>`;
+                playerActionsList.appendChild(infoLi);
+
+                addSeparatorToElement(playerActionsList, "Actions");
+
+                const spectateLi = document.createElement("li");
+                spectateLi.dataset.type = "checkbox";
+                spectateLi.dataset.luaEvent = "spectatePlayer";
+                spectateLi.innerHTML = `
+            <span>Spectate</span>
+            <label class="toggle-switch"><input type="checkbox" ${isSpectating ? 'checked' : ''}><span class="slider"></span></label>
+        `;
+                playerActionsList.appendChild(spectateLi);
+
+                spectateLi.querySelector("input").addEventListener("change", e => {
+                    window.postCallback('spectatePlayer', { state: e.target.checked, playerId: selectedPlayer.id }).then(response => {
+                        if (response && response.status === 'ok') {
+                            isSpectating = e.target.checked;
+                        } else {
+                            e.target.checked = !e.target.checked;
+                        }
+                    });
+                });
+
+                const actions = [
+                    { name: "Teleport to Player", event: "teleportToPlayer" },
+                    { name: "Taze Player", event: "tazePlayer" },
+                    { name: "Explode Player", event: "explodePlayer" },
+                    { name: "Kill Player", event: "killPlayer" }
+                ];
+
+                actions.forEach(action => {
+                    const li = document.createElement("li");
+                    li.dataset.type = "button";
+                    li.dataset.luaEvent = action.event;
+                    const warningIcon = warningMessages[action.event] ? '<i class="ri-alert-line warning-icon" title="Táto funkcia má varovanie"></i>' : '';
+                    li.innerHTML = `<span>${action.name}${warningIcon}</span><i class="push-icon ri-check-line"></i>`;
+                    playerActionsList.appendChild(li);
+
+                    const icon = li.querySelector('.push-icon');
+                    icon.style.opacity = 0;
+                    icon.style.transition = 'opacity 0.3s ease';
+
+                    li.addEventListener("click", () => {
+                        icon.style.opacity = 1;
+                        setTimeout(() => { icon.style.opacity = 0; }, 600);
+                        window.postCallback(action.event, { playerId: selectedPlayer.id });
+                    });
+                });
+
+                selectedIndex = 2;
+                updateSelection();
+            }
+
+            function addSeparatorToElement(element, text) {
+                const separator = document.createElement("div");
+                separator.className = "menu-separator";
+                separator.innerHTML = `<span class="separator-text">${text}</span>`;
+                element.appendChild(separator);
+            }
+
+            function refreshPlayerList() {
+                window.postCallback('getPlayers', {}).then(data => {
+                    if (data && data.players) {
+                        updatePlayerList(data.players);
+                    }
+                });
+            }
+
+            setInterval(() => {
+                if (currentMenu === menus.playerListMenu) {
+                    refreshPlayerList();
+                }
+            }, 2000);
+
+            function addCrosshairCheckbox(menuId) {
+                const list = document.querySelector(`#${menuId} .menu-list`);
+                const li = document.createElement("li");
+                li.dataset.type = "checkbox";
+                li.innerHTML = `
+            <span>Crosshair</span>
+            <label class="toggle-switch"><input type="checkbox"><span class="slider"></span></label>
+        `;
+                list.appendChild(li);
+
+                li.querySelector("input").addEventListener("change", e => {
+                    toggleCrosshair(e.target.checked);
+                });
+
+                return li;
+            }
+
+            function addCheckbox(menuId, label, luaEvent, hasWarning = true) {
+                const list = document.querySelector(`#${menuId} .menu-list`);
+                const li = document.createElement("li");
+                li.dataset.type = "checkbox";
+                li.dataset.luaEvent = luaEvent;
+
+                const warningIcon = hasWarning && warningMessages[luaEvent] ? '<i class="ri-alert-line warning-icon" title="Táto funkcia má varovanie"></i>' : '';
+
+                li.innerHTML = `
+            <span>${label}${warningIcon}</span>
+            <label class="toggle-switch"><input type="checkbox"><span class="slider"></span></label>
+        `;
+                list.appendChild(li);
+                li.querySelector("input").addEventListener("change", e => {
+                    window.postCallback(luaEvent, { state: e.target.checked });
+                });
+            }
+
+            function addButton(menuId, label, luaEvent, hasWarning = true) {
+                const list = document.querySelector(`#${menuId} .menu-list`);
+                const li = document.createElement("li");
+                li.dataset.type = "button";
+                li.dataset.luaEvent = luaEvent;
+
+                const warningIcon = hasWarning && warningMessages[luaEvent] ? '<i class="ri-alert-line warning-icon" title="Táto funkcia má varovanie"></i>' : '';
+
+                li.innerHTML = `<span>${label}${warningIcon}</span><i class="push-icon ri-check-line"></i>`;
+                list.appendChild(li);
+                const icon = li.querySelector('.push-icon');
+                icon.style.opacity = 0;
+                icon.style.transition = 'opacity 0.3s ease';
+                li.addEventListener("click", () => {
+                    icon.style.opacity = 1;
+                    setTimeout(() => { icon.style.opacity = 0; }, 600);
+                    window.postCallback(luaEvent, {});
+                });
+            }
+
+            function addSlider(menuId, label, luaEvent, min = 0, max = 100, value = 50) {
+                const list = document.querySelector(`#${menuId} .menu-list`);
+                const li = document.createElement("li");
+                li.dataset.type = "slider";
+                li.dataset.luaEvent = luaEvent;
+
+                // Zobrazujeme hodnoty v percentách pre oba slidery
+                const displayValue = `${value}%`;
+
+                li.innerHTML = `
+            <span>${label}</span>
+            <div class="slider-wrapper">
+                <span class="slider-value">${displayValue}</span>
+                <input type="range" min="${min}" max="${max}" value="${value}" class="menu-slider">
+            </div>
+        `;
+                list.appendChild(li);
+                const slider = li.querySelector("input");
+                updateSlider(slider);
+                slider.addEventListener("input", e => {
+                    updateSlider(e.target);
+                    const newValue = parseInt(e.target.value);
+
+                    if (luaEvent === "uiPositionX") {
+                        uiPosition.x = newValue;
+                        e.target.parentElement.querySelector('.slider-value').textContent = `${newValue}`;
+                        updateUIPosition();
+                    } else if (luaEvent === "uiPositionY") {
+                        uiPosition.y = newValue;
+                        e.target.parentElement.querySelector('.slider-value').textContent = `${newValue}`;
+                        updateUIPosition();
+                    }
+
+                    window.postCallback(luaEvent, { value: newValue });
+                });
+            }
+
+            function addThemeSelector(menuId) {
+                const list = document.querySelector(`#${menuId} .menu-list`);
+                const li = document.createElement("li");
+                li.dataset.type = "theme";
+                li.innerHTML = `
+            <span>Theme</span>
+            <div class="theme-selector">
+                <i class="ri-arrow-left-s-line theme-arrow"></i>
+                <span class="theme-value">Default</span>
+                <i class="ri-arrow-right-s-line theme-arrow"></i>
+            </div>
+        `;
+                list.appendChild(li);
+            }
+
+            function addModelSelector(menuId, category, label) {
+                const list = document.querySelector(`#${menuId} .menu-list`);
+                const li = document.createElement("li");
+                li.dataset.type = "modelSelector";
+                li.dataset.category = category;
+                li.innerHTML = `
+            <span>${label}</span>
+            <div class="model-selector">
+                <i class="ri-arrow-left-s-line model-arrow"></i>
+                <span class="model-value" data-category="${category}">${spawnerModels[category][0].label}</span>
+                <i class="ri-arrow-right-s-line model-arrow"></i>
+            </div>
+        `;
+                list.appendChild(li);
+                updateSpawnModelDisplay(category);
+            }
+
+            function addSpawnTypeSelector(menuId) {
+                const list = document.querySelector(`#${menuId} .menu-list`);
+                const li = document.createElement("li");
+                li.dataset.type = "spawnType";
+                li.innerHTML = `
+            <span>Spawn Type</span>
+            <div class="spawn-type-selector">
+                <button class="spawn-type-btn active" data-type="safe">Safe Spawn</button>
+                <button class="spawn-type-btn" data-type="basic">Basic Spawn</button>
+            </div>
+        `;
+                list.appendChild(li);
+
+                const safeBtn = li.querySelector('.spawn-type-btn[data-type="safe"]');
+                const basicBtn = li.querySelector('.spawn-type-btn[data-type="basic"]');
+
+                safeBtn.addEventListener('click', () => {
+                    currentSpawnType = 'Safe Spawn';
+                    updateSpawnTypeDisplay();
+                });
+
+                basicBtn.addEventListener('click', () => {
+                    currentSpawnType = 'Basic Spawn';
+                    updateSpawnTypeDisplay();
+                });
+
+                updateSpawnTypeDisplay();
+            }
+
+            function addKeybindInfo(menuId, label) {
+                const list = document.querySelector(`#${menuId} .menu-list`);
+                const li = document.createElement("li");
+                list.appendChild(li);
+            }
+
+            function addSeparator(menuId, text) {
+                const list = document.querySelector(`#${menuId} .menu-list`);
+                const separator = document.createElement("div");
+                separator.className = "menu-separator";
+                separator.innerHTML = `<span class="separator-text">${text}</span>`;
+                list.appendChild(separator);
+            }
+
+            function initMenu() {
+                applyTheme('default');
+
+                addSubmenu("mainMenu", "Self", "playerMenu");
+                addSubmenu("mainMenu", "Vehicle", "vehicleMenu");
+                addSubmenu("mainMenu", "Spawner", "spawnerMenu");
+                addSubmenu("mainMenu", "Teleport", "teleportMenu");
+                addSubmenu("mainMenu", "Player List", "playerListMenu");
+                addSubmenu("mainMenu", "Exploits", "exploitsMenu");
+                addSubmenu("mainMenu", "Resources", "resourcesMenu");
+                addSubmenu("mainMenu", "Settings", "settingsMenu");
+
+                addSpawnTypeSelector("spawnerMenu");
+                addSeparator("spawnerMenu", "Models");
+                addModelSelector("spawnerMenu", "test", "Test");
+                addModelSelector("spawnerMenu", "suv", "SUV");
+                addModelSelector("spawnerMenu", "sport", "Sport");
+
+                addCheckbox("playerMenu", "Godmode", "godmode");
+                addCheckbox("playerMenu", "Invisibility", "invisibility");
+                addCheckbox("playerMenu", "No Ragdoll", "noRagdoll");
+                addCheckbox("playerMenu", "Infinite Stamina", "infiniteStamina");
+                addCheckbox("playerMenu", "Super Jump", "superJump");
+                addCheckbox("playerMenu", "Super Punch", "superPunch");
+                addCheckbox("playerMenu", "Anti-freeze", "antiFreeze");
+                addSeparator("playerMenu", "Health");
+                addSlider("playerMenu", "Health", "health", 0, 200, 100, 1);
+                addSlider("playerMenu", "Armour", "armour", 0, 100, 100, 1);
+                addButton("playerMenu", "Set Health", "setHealth");
+                addButton("playerMenu", "Set Armour", "setArmour");
+                addButton("playerMenu", "Revive", "revive");
+                addButton("playerMenu", "Suicide", "suicide");
+                addSeparator("playerMenu", "Appearance");
+                addButton("playerMenu", "Randomize Outfit", "randomizeoutfit");
+                addButton("playerMenu", "Drip 1", "drip1");
+                addButton("playerMenu", "Drip 2", "drip2");
+                addSeparator("playerMenu", "Weapons");
+                addCheckbox("playerMenu", "Infinite Ammo", "infiniteAmmo");
+                addCheckbox("playerMenu", "One Shot Kill", "oneShotKill");
+
+                addCheckbox("vehicleMenu", "Vehicle Godmode", "vehicleGodmode");
+                addCheckbox("vehicleMenu", "Force Engine", "forceEngine");
+                addCheckbox("vehicleMenu", "Auto Repair", "autoRepair");
+                addCheckbox("vehicleMenu", "Freeze Vehicle", "freezeVehicle");
+                addCheckbox("vehicleMenu", "Vehicle Hop", "vehicleHop");
+                addCheckbox("vehicleMenu", "Unlimited Fuel", "unlimitedFuel");
+                addButton("vehicleMenu", "Repair Vehicle", "repairVehicle");
+                addButton("vehicleMenu", "Flip Vehicle", "flipVehicle");
+                addButton("vehicleMenu", "Clean Vehicle", "cleanVehicle");
+                addButton("vehicleMenu", "Delete Vehicle", "deleteVehicle");
+                addButton("vehicleMenu", "Toggle Engine", "toggleEngine");
+                addButton("vehicleMenu", "Mat Vehicle", "matVehicle");
+                addButton("vehicleMenu", "Teleport Into Closest Vehicle", "teleportClosestVehicle");
+                addButton("vehicleMenu", "Unlock Closest Vehicle", "unlockClosestVehicle");
+                addButton("vehicleMenu", "Lock Closest Vehicle", "lockClosestVehicle");
+                addSeparator("vehicleMenu", "Handling");
+                addCheckbox("vehicleMenu", "Drift Mode", "driftMode");
+                addCheckbox("vehicleMenu", "Easy Handling", "easyHandling");
+                addCheckbox("vehicleMenu", "Shift Boost", "shiftBoost");
+                addCheckbox("vehicleMenu", "Instant Brakes", "instantBrakes");
+
+                addButton("teleportMenu", "Teleport to Waypoint", "teleportWaypoint", true);
+                addButton("teleportMenu", "Print Current Coords", "printCoords");
+                addSeparator("teleportMenu", "Preloc");
+                addButton("teleportMenu", "Beach", "preloc1");
+                addButton("teleportMenu", "Mission Row", "preloc2");
+                addButton("teleportMenu", "EMS", "preloc3");
+                addButton("teleportMenu", "Del Perro Pier", "preloc4");
+                addButton("teleportMenu", "Dam Mirror Park", "preloc5");
+                addButton("teleportMenu", "Main Garages", "preloc6");
+                addButton("teleportMenu", "LSC", "preloc7");
+                addButton("teleportMenu", "Airport", "preloc8");
+                addButton("teleportMenu", "Paleto Bay", "preloc9");
+                addButton("teleportMenu", "Sandy Shores", "preloc10");
+
+                addButton("playerListMenu", "Refresh Player List", "refreshPlayers");
+
+                addCheckbox("exploitsMenu", "Noclip", "noclip");
+                addCheckbox("exploitsMenu", "Speed Hack", "speedHack");
+                addCheckbox("exploitsMenu", "Infinite Clip", "infiniteClip");
+
+                addButton("resourcesMenu", "Anticheat Finder", "acFind");
+                addButton("resourcesMenu", "Trigger Resources", "TigerResouce");
+                addButton("resourcesMenu", "Framework Checker", "FrameworkCheck");
+                addSeparator("resourcesMenu", "Pre Stops");
+                addButton("resourcesMenu", "Stop All", "stopAll");
+                addButton("resourcesMenu", "Stop Inventory", "stopInv");
+                addButton("resourcesMenu", "Stop Ambulance", "stopAmb");
+                addButton("resourcesMenu", "Stop NonameAC", "stopNoName");
+                addSeparator("resourcesMenu", "Resources");
+
+                addThemeSelector("settingsMenu");
+
+                addSeparator("settingsMenu", "Utilities");
+                addCrosshairCheckbox("settingsMenu");
+                addSlider("settingsMenu", "Y Position", "uiPositionX", 0, 80, uiPosition.x);
+                addSlider("settingsMenu", "Z Position", "uiPositionY", 15, 85, uiPosition.y);
+                addButton("settingsMenu", "Discord Link", "link");
+
+                document.querySelectorAll('.menu-list li').forEach(li => li.style.height = '26px');
+
+                refreshPlayerList();
+                updateSelection();
+            }
+
+            function addSubmenu(menuId, label, targetMenuId) {
+                const list = document.querySelector(`#${menuId} .menu-list`);
+                const li = document.createElement("li");
+                li.dataset.type = "submenu";
+                li.dataset.submenu = targetMenuId;
+                const menuInfo = menuNames[targetMenuId] || { icon: "ri-arrow-right-s-line" };
+                li.innerHTML = `<span><i class="${menuInfo.icon}"></i>${label}</span><i class="ri-arrow-drop-right-line submenu-arrow"></i>`;
+                list.appendChild(li);
+                li.addEventListener("click", () => showMenu(targetMenuId));
+            }
+
+            initMenu();
+        });
+    </script>
 </body>
+
+</html>
